@@ -1,0 +1,120 @@
+Final Tables for Online Bookstore
+-- 1. Customer Table
+CREATE TABLE Customer (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    FullName VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    Phone VARCHAR(20),
+    Address TEXT,
+    Profession VARCHAR(50),
+    Preferences TEXT,
+    DateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Publisher Table
+CREATE TABLE Publisher (
+    PublisherID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Address TEXT,
+    ContactNumber VARCHAR(20)
+);
+
+-- 3. Book Table
+CREATE TABLE Book (
+    ISBN VARCHAR(20) PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    Author VARCHAR(100), 
+    PublisherID INT,
+    Price DECIMAL(10,2) NOT NULL,
+    StockQuantity INT DEFAULT 0,
+    SubjectArea VARCHAR(50),
+    YearOfPublication YEAR,
+    Description TEXT,
+    FOREIGN KEY (PublisherID) REFERENCES Publisher(PublisherID)
+);
+
+-- 4. ShoppingCart Table
+CREATE TABLE ShoppingCart (
+    CartID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    CreatedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+-- 5. CartItem Table
+CREATE TABLE CartItem (
+    CartItemID INT AUTO_INCREMENT PRIMARY KEY,
+    CartID INT,
+    ISBN VARCHAR(20),
+    Quantity INT NOT NULL,
+    FOREIGN KEY (CartID) REFERENCES ShoppingCart(CartID) ON DELETE CASCADE,
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+);
+
+-- 6. Order Table
+CREATE TABLE `Order` (
+    OrderID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ShippingAddress TEXT,
+    TotalAmount DECIMAL(10,2),
+    OrderStatus ENUM('Pending','Confirmed','Shipped','Delivered','Cancelled','Returned') DEFAULT 'Pending',
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+-- 7. OrderItem Table
+CREATE TABLE OrderItem (
+    OrderItemID INT AUTO_INCREMENT PRIMARY KEY,
+    OrderID INT,
+    ISBN VARCHAR(20),
+    Quantity INT NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID) ON DELETE CASCADE,
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+);
+
+-- 8. Payment Table
+CREATE TABLE Payment (
+    PaymentID INT AUTO_INCREMENT PRIMARY KEY,
+    OrderID INT,
+    PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PaymentMethod ENUM('Card','PayPal','Mpesa','StoreCredit') NOT NULL,
+    PaymentStatus ENUM('Pending','Completed','Failed','Refunded') DEFAULT 'Pending',
+    Amount DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID)
+);
+
+-- 9. Shipping Table
+CREATE TABLE Shipping (
+    ShippingID INT AUTO_INCREMENT PRIMARY KEY,
+    OrderID INT,
+    Carrier VARCHAR(50),
+    TrackingNumber VARCHAR(50),
+    ShippedDate DATE,
+    DeliveryDate DATE,
+    Status ENUM('Pending','In Transit','Delivered','Returned') DEFAULT 'Pending',
+    FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID)
+);
+
+-- 10. Review Table (Optional)
+CREATE TABLE Review (
+    ReviewID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    ISBN VARCHAR(20),
+    Rating INT CHECK (Rating BETWEEN 1 AND 5),
+    Comment TEXT,
+    ReviewDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+);
+
+-- 11. Discount/Coupon Table (Optional)
+CREATE TABLE Discount (
+    CouponID INT AUTO_INCREMENT PRIMARY KEY,
+    Code VARCHAR(20) UNIQUE NOT NULL,
+    Description TEXT,
+    DiscountPercent DECIMAL(5,2),
+    StartDate DATE,
+    EndDate DATE
+);
