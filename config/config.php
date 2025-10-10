@@ -2,7 +2,7 @@
 // Database connection configuration
 $host = 'localhost';
 $user = 'root';
-$pass = 'postgres'; // change if you have a password
+$pass = ''; // change if you have a password
 $dbname = 'maktaba_db';
 
 // Create connection
