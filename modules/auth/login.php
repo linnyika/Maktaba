@@ -1,10 +1,7 @@
 <?php
-
 session_start(); 
 include('../../config/config.php'); 
 password_hash('1234', PASSWORD_DEFAULT);
-
-
 $error = ''; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
