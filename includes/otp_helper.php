@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
+function generateOTP($length = 6) {
+    return str_pad(rand(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
+}
+
+
 function verifyOTP($email, $otp) {
     global $conn;
 
