@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . '/../config/conf.php';
+include_once __DIR__ . '/../config/config.php';
 include_once __DIR__ . '/../includes/otp_helper.php';
 require_once __DIR__ . '/../mailer/send_request.php';
 
