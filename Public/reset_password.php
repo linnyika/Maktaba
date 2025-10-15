@@ -1,34 +1,85 @@
 <?php
-include('../config/config.php');
+include_once __DIR__ . '/../config/conf.php';
 
-$email = $_GET['email'] ?? '';
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $new_pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("UPDATE customers SET password_hash = ?, otp_code = NULL, otp_expiry = NULL WHERE email = ?");
+    $stmt = $conn->prepare("UPDATE customers SET password_hash = ? WHERE email = ?");
     $stmt->bind_param("ss", $new_pass, $email);
 
     if ($stmt->execute()) {
-        $message = "Password updated successfully! You can now log in.";
+        $message = "✅ Password updated successfully! You can now log in.";
     } else {
-        $message = "Error updating password.";
+        $message = "❌ Failed to reset password. Try again.";
     }
 }
 ?>
-
 <!DOCTYPE html>
-<html>
-<head><title>Reset Password</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maktaba | Set New Password</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #ff6a00, #ffcc00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 40px 50px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      color: #b36b00;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #ff6a00;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e65c00;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
 <body>
+  <div class="container">
     <h2>Set New Password</h2>
     <form method="POST">
-        <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
-        <input type="password" name="password" placeholder="New Password" required>
-        <button type="submit">Update Password</button>
+      <input type="hidden" name="email" value="<?= htmlspecialchars($_GET['email'] ?? '') ?>">
+      <input type="password" name="password" placeholder="Enter new password" required>
+      <button type="submit">Update Password</button>
     </form>
-    <p><?= $message ?></p>
+    <?php if ($message): ?>
+      <div class="message"><?= $message ?></div>
+    <?php endif; ?>
+  </div>
 </body>
 </html>
