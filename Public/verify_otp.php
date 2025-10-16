@@ -1,19 +1,19 @@
 <?php
-<<<<<<< HEAD
-include_once __DIR__ . '/../config/config.php';
-include_once __DIR__ . '/../includes/otp_helper.php';
-=======
 include('../database/config.php');
->>>>>>> UI_Interface
 
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $otp = trim($_POST['otp']);
+    $new_password = password_hash(trim($_POST['new_password']), PASSWORD_DEFAULT);
 
-    $result = verifyOTP($email, $otp);
-    $message = $result['message'];
+    // Check OTP
+    $stmt = $conn->prepare("SELECT otp_code, otp_expiry FROM customers WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
 
     if ($result['success']) {
         header("Location: reset_password.php?email=" . urlencode($email));
@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,17 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Verify OTP</h2>
-    <p>Enter the code sent to your email.</p>
+<div class="reset-box">
+    <h2>Enter OTP & New Password</h2>
     <form method="POST">
-      <input type="email" name="email" placeholder="Your email" required>
-      <input type="text" name="otp" placeholder="Enter OTP" required maxlength="6">
-      <button type="submit">Verify</button>
+        <input type="email" name="email" placeholder="Your email" required>
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+        <input type="password" name="new_password" placeholder="New password" required>
+        <button type="submit">Reset Password</button>
     </form>
-    <?php if ($message): ?>
-      <div class="message"><?= $message ?></div>
-    <?php endif; ?>
-  </div>
+    <div class="msg"><?= $message ?></div>
+</div>
 </body>
 </html>
