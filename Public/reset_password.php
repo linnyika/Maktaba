@@ -1,5 +1,5 @@
 <?php
-include('../config/config.php');
+include('../database/config.php');
 
 $email = $_GET['email'] ?? '';
 $message = '';

@@ -38,8 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" action="">
         <label>Email:</label><br>
         <input type="email" name="email" required style="width:100%; padding:8px;"><br><br>
-
-        <button type="submit" style="width:100%; background-color:#007bff; color:white; padding:10px; border:none; border-radius:5px;">Resend OTP</button>
+        <a href="modules/auth/verify_otp.php" class="btn btn-success w-100 mb-3">Resend OTP</a>
     </form>
 </div>
 </body>

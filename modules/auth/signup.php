@@ -1,77 +1,85 @@
 <?php
-include_once __DIR__ . '/../../config/config.php';
-include_once __DIR__ . '/../../mailer/send_otp.php';
+require_once("../../database/config.php");
+require_once("../../mailer/send_otp.php");
 
-// Handle form submission
+$message = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $full_name = trim($_POST['full_name']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // Hash password
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-    // Generate OTP (6 digits)
     $otp = rand(100000, 999999);
     $otp_expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
-    // Check if email exists
     $check = $conn->prepare("SELECT email FROM customers WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
     $result = $check->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<p style='color:red;'>Email already registered. Please log in.</p>";
+        $message = "<div class='alert alert-warning'>Email already registered. Please log in.</div>";
     } else {
-        // Insert new user
-        $stmt = $conn->prepare("
-            INSERT INTO customers (full_name, email, password_hash, otp_code, otp_expiry, is_verified)
-            VALUES (?, ?, ?, ?, ?, 0)
-        ");
+        $stmt = $conn->prepare("INSERT INTO customers (full_name, email, password_hash, otp_code, otp_expiry, is_verified)
+                                VALUES (?, ?, ?, ?, ?, 0)");
         $stmt->bind_param("sssss", $full_name, $email, $password_hash, $otp, $otp_expiry);
 
         if ($stmt->execute()) {
-            // Send OTP email
             if (sendOtpEmail($email, $full_name, $otp)) {
-                echo "<p style='color:green;'>Registration successful! OTP sent to your email.</p>";
-                echo "<a href='verify_otp.php'>Click here to verify</a>";
+                $message = "<div class='alert alert-success'>Registration successful! OTP sent to your email.</div>";
             } else {
-                echo "<p style='color:red;'>Registration saved but OTP could not be sent. Please contact admin.</p>";
+                $message = "<div class='alert alert-danger'>Account created but OTP email failed to send. Contact admin.</div>";
             }
         } else {
-            echo "<p style='color:red;'>Registration failed. Try again later.</p>";
+            $message = "<div class='alert alert-danger'>Something went wrong. Please try again.</div>";
         }
-
         $stmt->close();
     }
-
     $check->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Register - Maktaba</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta charset="UTF-8">
+  <title>Maktaba | Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Minty Bootswatch Theme -->
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="font-family: Arial, sans-serif; background-color:#f8f9fa;">
-    <div style="width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-        <h2 style="text-align:center; color:#0056b3;">Register</h2>
-        <form method="POST" action="">
-            <label>Full Name:</label><br>
-            <input type="text" name="full_name" required style="width:100%; padding:8px;"><br><br>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-            <label>Email:</label><br>
-            <input type="email" name="email" required style="width:100%; padding:8px;"><br><br>
+  <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body text-center">
+      <img src="../../assets/img/logo.jpg" alt="Maktaba Logo" width="60" class="mb-3">
+      <h3 class="fw-bold text-primary mb-3">Create Account</h3>
 
-            <label>Password:</label><br>
-            <input type="password" name="password" required style="width:100%; padding:8px;"><br><br>
+      <?php echo $message; ?>
 
-            <button type="submit" style="width:100%; background-color:#007bff; color:white; padding:10px; border:none; border-radius:5px;">Register</button>
-        </form>
+      <form method="POST" action="">
+        <div class="mb-3 text-start">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="full_name" class="form-control" placeholder="Your full name" required>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Choose a strong password" required>
+        </div>
+        <a href="verify_otp.php" class="btn btn-success w-100 mb-3">Sign Up</a>
+      </form>
+
+      <p class="mb-0">Already have an account? 
+        <a href="login.php" class="text-primary text-decoration-none fw-semibold">Login here</a>
+      </p>
     </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

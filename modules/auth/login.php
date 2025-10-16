@@ -1,17 +1,17 @@
 <?php
-session_start(); 
-include('../../config/config.php'); 
-password_hash('1234', PASSWORD_DEFAULT);
-$error = ''; 
+session_start();
+require_once("../../database/config.php");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+$error = "";
 
-    if (!empty($email) && !empty($password)) {
-        
-        $query = "SELECT * FROM Customer WHERE Email = ?";
-        $stmt = $conn->prepare($query);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = trim($_POST["email"]);
+    $password = trim($_POST["password"]);
+
+    if (empty($email) || empty($password)) {
+        $error = "Please enter both email and password.";
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM customers WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -20,54 +20,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $result->fetch_assoc();
 
             if ($user['is_verified'] == 1) {
-                if (password_verify($password, $user['PasswordHash'])) {
-                    $_SESSION['customer_id'] = $user['CustomerID'];
-                    $_SESSION['fullname'] = $user['FullName'];
-                    header("Location: ../../modules/dashboard/dashboard.php");
+                if (password_verify($password, $user['password_hash'])) {
+                    $_SESSION['customer_id'] = $user['customer_id'];
+                    $_SESSION['fullname'] = $user['full_name'];
+                    header("Location: ../dashboard/dashboard.php");
                     exit;
                 } else {
-                    $error = "Invalid password.";
+                    $error = "Incorrect password.";
                 }
             } else {
-                $error = "Account not verified!! Please check your email for OTP code.";
+                $error = "Please verify your account first (check your email).";
             }
         } else {
             $error = "No account found with that email.";
         }
-    } else {
-        $error = "Please fill in all fields.";
     }
 }
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Maktaba</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta charset="UTF-8">
+  <title>Maktaba | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Minty Bootswatch Theme -->
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="login-container">
-        <h2>Login to Maktaba</h2>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-        <?php if (!empty($error)): ?>
-            <p class="error"><?php echo $error; ?></p>
-        <?php endif; ?>
+  <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body text-center">
+      <img src="../../assets/img/logo.jpg" alt="Maktaba Logo" width="60" class="mb-3">
+      <h3 class="fw-bold text-primary mb-3">Login to Maktaba</h3>
 
-        <form method="POST" action="">
-            <label>Email:</label>
-            <input type="email" name="email" required>
+      <?php if (!empty($error)): ?>
+        <div class="alert alert-danger py-2"><?php echo $error; ?></div>
+      <?php endif; ?>
 
-            <label>Password:</label>
-            <input type="password" name="password" required>
+      <form method="POST" action="">
+        <div class="mb-3 text-start">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <a href="dashboard/dashboard.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
+      </form>
 
-            <button type="submit">Login</button>
-        </form>
-
-        <p>Don’t have an account? <a href="signup.php">Sign Up</a></p>
+      <p class="mb-0">Don’t have an account? 
+        <a href="signup.php" class="text-primary text-decoration-none fw-semibold">Sign up here</a>
+      </p>
     </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

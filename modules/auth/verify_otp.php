@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = verifyOTP($email, $otp);
 
     if ($result['success']) {
-        $message = "<p style='color:green; text-align:center;'>{$result['message']}</p>";
-        $redirect = "<p style='text-align:center;'><a href='login.php'>Go to Login</a></p>";
+        $message = "<div class='alert alert-success text-center'>{$result['message']}</div>";
+        $redirect = "<div class='text-center mt-2'><a href='login.php' class='text-decoration-none text-success fw-bold'>Go to Login</a></div>";
     } else {
-        $message = "<p style='color:red; text-align:center;'>{$result['message']}</p>";
-        $redirect = "<p style='text-align:center;'><a href='resend_otp.php'>Resend OTP</a></p>";
+        $message = "<div class='alert alert-danger text-center'>{$result['message']}</div>";
+        $redirect = "<div class='text-center mt-2'><a href='resend_otp.php' class='text-decoration-none text-danger fw-bold'>Resend OTP</a></div>";
     }
 }
 ?>
@@ -25,22 +25,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP - Maktaba</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="font-family: Arial; background-color:#f8f9fa;">
-<div style="width:400px; margin:50px auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 8px rgba(0,0,0,0.1);">
-    <h2 style="text-align:center; color:#0056b3;">Verify OTP</h2>
-    <?= $message ?? '' ?>
-    <?= $redirect ?? '' ?>
-    <form method="POST" action="">
-        <label>Email:</label><br>
-        <input type="email" name="email" required style="width:100%; padding:8px;"><br><br>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-        <label>Enter OTP:</label><br>
-        <input type="text" name="otp" maxlength="6" required style="width:100%; padding:8px;"><br><br>
+<div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body">
+        <h3 class="text-center text-success mb-4">Verify OTP</h3>
 
-        <button type="submit" style="width:100%; background-color:#007bff; color:white; padding:10px; border:none; border-radius:5px;">Verify</button>
-    </form>
+        <?= $message ?? '' ?>
+        <?= $redirect ?? '' ?>
+
+        <form method="POST" action="">
+            <div class="mb-3">
+                <label class="form-label">Email address</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Enter OTP</label>
+                <input type="text" name="otp" maxlength="6" class="form-control" placeholder="Enter the 6-digit code" required>
+            </div>
+
+            <a href="modules/auth/login.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
+        </form>
+    </div>
 </div>
+
 </body>
 </html>

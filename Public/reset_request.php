@@ -1,6 +1,6 @@
 <?php
 // password_reset/reset_request.php
-include('../config/config.php');
+include('../database/config.php');
 include('../includes/otp_helper.php');
 include('../mailer/send_request.php');
 
