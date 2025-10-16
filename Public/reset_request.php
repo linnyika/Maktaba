@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update->execute();
 
             if (sendResetOTP($email, $otp)) {
-                $message = "✅ An OTP has been sent to <strong>$email</strong>.";
+                $message = "✅ An OTP has been sent to <strong>$email</strong>.<a href='verify_reset.php'>Click here to verify and reset your password</a>.";
             } else {
                 $message = "❌ Failed to send OTP. Try again later.";
             }
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #0066cc, #33ccff);
+      background: linear-gradient(135deg, #ffff, #00ddffff);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     h2 {
       margin-bottom: 15px;
-      color: #003366;
+      color: #2ba0e8f9;
     }
     input[type=email] {
       width: 100%;
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin-bottom: 20px;
     }
     button {
-      background-color: #0066cc;
+      background-color: #00a2ffff;
       color: #fff;
       border: none;
       padding: 12px;
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       cursor: pointer;
     }
     button:hover {
-      background-color: #004c99;
+      background-color: #180a0117;
     }
     p {
       margin-top: 15px;
