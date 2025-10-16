@@ -1,6 +1,10 @@
 <?php
+<<<<<<< HEAD
 include_once __DIR__ . '/../config/config.php';
 include_once __DIR__ . '/../includes/otp_helper.php';
+=======
+include('../database/config.php');
+>>>>>>> UI_Interface
 
 $message = '';
 

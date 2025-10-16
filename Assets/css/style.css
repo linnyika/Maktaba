@@ -1,0 +1,13 @@
+/* Auth Page Styles */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #b5ead7, #f0fff4);
+}
+.auth-container .card {
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+}

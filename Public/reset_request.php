@@ -1,7 +1,14 @@
 <?php
+<<<<<<< HEAD
 include_once __DIR__ . '/../config/config.php';
 include_once __DIR__ . '/../includes/otp_helper.php';
 require_once __DIR__ . '/../mailer/send_request.php';
+=======
+// password_reset/reset_request.php
+include('../database/config.php');
+include('../includes/otp_helper.php');
+include('../mailer/send_request.php');
+>>>>>>> UI_Interface
 
 $message = '';
 

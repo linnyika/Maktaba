@@ -13,12 +13,14 @@ function sendResetOTP($email, $otp) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'your_email@gmail.com'; // Replace with your Gmail
-        $mail->Password = 'your_app_password';    // Replace with Gmail App Password
-        $mail->SMTPSecure = 'tls';
+        $mail->Username = 'juliet.nyakiamo@strathmore.edu';  // your Gmail
+        $mail->Password = 'aoqb xtmj pqgy utlo';           // your Gmail App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        $mail->setFrom('your_email@gmail.com', 'Maktaba');
+        // Recipients
+        $mail->setFrom('jnyakiamovictoria@gmail.com', 'Maktaba');
+        $mail->addAddress($email);
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Maktaba Password Reset OTP';
