@@ -1,3 +1,3 @@
 <?php
-header("Location: modules/auth/register.php");
+header("Location: modules/auth/signup.php");
 exit();
