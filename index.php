@@ -12,7 +12,7 @@ require_once __DIR__ . '/includes/functions.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maktaba | Library Store</title>
+    <title>Maktaba</title>
 
     <!-- Bootswatch Minty Theme -->
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +26,7 @@ require_once __DIR__ . '/includes/functions.php';
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold" href="index.php">
-      <img src="assets/img/logo.jpg" alt="Maktaba Logo" width="40" class="me-2">
+      <img src="assets/img/logosmall.png" alt="Maktaba Logo" width="40" class="me-2">
       Maktaba
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -47,7 +47,7 @@ require_once __DIR__ . '/includes/functions.php';
 <main class="flex-grow-1 d-flex align-items-center justify-content-center">
   <div class="card shadow-lg border-0 p-4" style="max-width: 450px; border-radius: 20px;">
     <div class="card-body text-center">
-      <img src="assets/img/logo.jpg" alt="Maktaba Logo" width="70" class="mb-3">
+      <img src="assets/img/logobig.png" alt="Maktaba Logo" width="70" class="mb-3">
       <h3 class="fw-bold text-primary mb-2">Welcome to Maktaba</h3>
       <p class="text-muted mb-4">Your digital library — explore, learn, and grow.</p>
       <a href="modules/auth/signup.php" class="btn btn-success btn-lg w-100">Get Started</a>
