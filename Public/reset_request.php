@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->bind_param("sss", $otp, $expiry, $email);
         $update->execute();
 
-        include('../mailer/send_reset_otp.php'); // ✅ send OTP email
+        include('../mailer/send_reset_otp.php'); 
 
         $message = "An OTP has been sent to your email.";
     } else {

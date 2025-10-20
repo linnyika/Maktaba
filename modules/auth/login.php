@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
     <div class="card-body text-center">
-      <img src="../../assets/img/logo.jpg" alt="Maktaba Logo" width="60" class="mb-3">
+      <img src="../../assets/img/logobig.png" alt="Maktaba Logo" width="60" class="mb-3">
       <h3 class="fw-bold text-primary mb-3">Login to Maktaba</h3>
 
       <?php if (!empty($error)): ?>
