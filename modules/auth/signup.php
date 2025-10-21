@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $otp = rand(100000, 999999);
     $otp_expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
+    // Check if email exists
     $check = $conn->prepare("SELECT email FROM customers WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $message = "<div class='alert alert-warning'>Email already registered. Please log in.</div>";
     } else {
+        // Insert new user
         $stmt = $conn->prepare("INSERT INTO customers (full_name, email, password_hash, otp_code, otp_expiry, is_verified)
                                 VALUES (?, ?, ?, ?, ?, 0)");
         $stmt->bind_param("sssss", $full_name, $email, $password_hash, $otp, $otp_expiry);
@@ -28,11 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             if (sendOtpEmail($email, $full_name, $otp)) {
                 $message = "<div class='alert alert-success'>Registration successful! OTP sent to your email.</div>";
+              
+                header("Location: verify_otp.php?email=" . urlencode($email));
+                exit();
             } else {
                 $message = "<div class='alert alert-danger'>Account created but OTP email failed to send. Contact admin.</div>";
             }
         } else {
-            $message = "<div class='alert alert-danger'>Something went wrong. Please try again.</div>";
+            $message = "<div class='alert alert-danger'>Something went wrong: " . $stmt->error . "</div>";
         }
         $stmt->close();
     }
@@ -45,8 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Maktaba | Sign Up</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Minty Bootswatch Theme -->
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
@@ -71,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <label class="form-label">Password</label>
           <input type="password" name="password" class="form-control" placeholder="Choose a strong password" required>
         </div>
-        <a href="verify_otp.php" class="btn btn-success w-100 mb-3">Sign Up</a>
+        <button type="submit" class="btn btn-success w-100 mb-3">Sign Up</button>
       </form>
 
       <p class="mb-0">Already have an account? 

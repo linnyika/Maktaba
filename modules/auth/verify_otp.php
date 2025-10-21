@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="otp" maxlength="6" class="form-control" placeholder="Enter the 6-digit code" required>
             </div>
 
-            <a href="modules/auth/login.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
+            <a href="\Maktaba\modules\auth\login.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
         </form>
     </div>
 </div>
