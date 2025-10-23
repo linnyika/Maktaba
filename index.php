@@ -46,7 +46,7 @@ require_once __DIR__ . '/includes/functions.php';
 <main class="flex-grow-1 d-flex align-items-center justify-content-center">
   <div class="card shadow-lg border-0 p-4" style="max-width: 450px; border-radius: 20px;">
     <div class="card-body text-center">
-      <img src="assets/img/logobig.png" alt="Maktaba Logo" width="70" class="mb-3">
+      <img src="assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
       <h3 class="fw-bold text-primary mb-2">Welcome to Maktaba</h3>
       <p class="text-muted mb-4">Your digital library — explore, learn, and grow.</p>
       <a href="modules/auth/signup.php" class="btn btn-success btn-lg w-100">Get Started</a>

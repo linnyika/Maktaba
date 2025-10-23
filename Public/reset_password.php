@@ -1,9 +1,5 @@
 <?php
-<<<<<<< HEAD
 include_once __DIR__ . '/../config/config.php';
-=======
-include('../database/config.php');
->>>>>>> UI_Interface
 
 $message = '';
 

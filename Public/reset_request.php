@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update->bind_param("sss", $otp, $expiry, $email);
             $update->execute();
 
-<<<<<<< HEAD
             if (sendResetOTP($email, $otp)) {
                 $message = "✅ An OTP has been sent to <strong>$email</strong>.<a href='verify_reset.php'>Click here to verify and reset your password</a>.";
             } else {
@@ -32,11 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $message = "⚠️ No account found with that email.";
         }
-=======
-        include('../mailer/send_reset_otp.php'); 
-
-        $message = "An OTP has been sent to your email.";
->>>>>>> UI_Interface
     } else {
         $message = "Please enter your email.";
     }
