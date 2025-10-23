@@ -18,16 +18,15 @@ require_once __DIR__ . '/includes/functions.php';
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 
     <!-- Optional Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="index.php">
-      <img src="assets/img/logosmall.png" alt="Maktaba Logo" width="40" class="me-2">
-      Maktaba
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="index.php"> 
+    Maktaba
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>

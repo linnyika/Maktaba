@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Resend OTP - Maktaba</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
 <body style="font-family: Arial; background-color:#f8f9fa;">
 <div style="width:400px; margin:50px auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 8px rgba(0,0,0,0.1);">

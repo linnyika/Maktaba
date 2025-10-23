@@ -1,4 +1,5 @@
-<?php
+<?php 
+ini_set('session.cookie_path', '/');
 session_start();
 require_once("../../database/config.php");
 
@@ -19,17 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            if ($user['is_verified'] == 1) {
-                if (password_verify($password, $user['password_hash'])) {
-                    $_SESSION['customer_id'] = $user['customer_id'];
-                    $_SESSION['fullname'] = $user['full_name'];
-                    header("Location: ../dashboard/dashboard.php");
-                    exit;
-                } else {
-                    $error = "Incorrect password.";
-                }
+            if (password_verify($password, $user['password_hash'])) {
+                $_SESSION['customer_id'] = $user['customer_id'];
+                $_SESSION['fullname'] = $user['full_name'];
+                header("Location: /Maktaba/modules/dashboard/dashboard.php");
+                exit;
             } else {
-                $error = "Please verify your account first (check your email).";
+                $error = "Incorrect password.";
             }
         } else {
             $error = "No account found with that email.";
@@ -43,15 +40,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta charset="UTF-8">
   <title>Maktaba | Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Minty Bootswatch Theme -->
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
-<body class="bg-light d-flex align-items-center justify-content-center vh-100">
-
-  <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
-    <div class="card-body text-center">
-      <img src="../../assets/img/logobig.png" alt="Maktaba Logo" width="60" class="mb-3">
+<body>
+  <div class="auth-container">
+    <div class="card p-4 border-0 shadow-lg text-center">
+      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
       <h3 class="fw-bold text-primary mb-3">Login to Maktaba</h3>
 
       <?php if (!empty($error)): ?>
@@ -67,15 +62,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <label class="form-label">Password</label>
           <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
         </div>
-        <a href="dashboard/dashboard.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
+        <button type="submit" class="btn btn-success w-100 mb-3">Login</button>
       </form>
 
       <p class="mb-0">Don’t have an account? 
-        <a href="signup.php" class="text-primary text-decoration-none fw-semibold">Sign up here</a>
+        <a href="/Maktaba/modules/auth/signup.php" class="text-primary fw-semibold text-decoration-none">Sign up here</a>
       </p>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
