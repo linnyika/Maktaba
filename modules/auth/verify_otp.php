@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../../includes/otp_helper.php';
-require_once __DIR__ . '/../../mailer/send_otp.php';
 
 $message = '';
+$redirect = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result['success']) {
         $message = "<div class='alert alert-success text-center'>{$result['message']}</div>";
-        $redirect = "<div class='text-center mt-2'><a href='login.php' class='text-decoration-none text-success fw-bold'>Go to Login</a></div>";
+        $redirect = "<div class='text-center mt-3'><a href='login.php' class='btn btn-success'>Go to Login</a></div>";
     } else {
         $message = "<div class='alert alert-danger text-center'>{$result['message']}</div>";
-        $redirect = "<div class='text-center mt-2'><a href='resend_otp.php' class='text-decoration-none text-danger fw-bold'>Resend OTP</a></div>";
+        $redirect = "<div class='text-center mt-3'><a href='resend_otp.php' class='btn btn-outline-primary'>Resend OTP</a></div>";
     }
 }
 ?>
@@ -26,31 +26,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Verify OTP - Maktaba</title>
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
-<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+<body>
+  <div class="auth-container">
+    <div class="card p-4 border-0 shadow-lg text-center">
+      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
+      <h3 class="fw-bold text-primary mb-3">Verify OTP</h3>
 
-<div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
-    <div class="card-body">
-        <h3 class="text-center text-success mb-4">Verify OTP</h3>
+      <?php echo $message; ?>
 
-        <?= $message ?? '' ?>
-        <?= $redirect ?? '' ?>
+      <form method="POST" action="">
+        <div class="mb-3 text-start">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
 
-        <form method="POST" action="">
-            <div class="mb-3">
-                <label class="form-label">Email address</label>
-                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
+        <div class="mb-3 text-start">
+          <label class="form-label">Enter OTP</label>
+          <input type="text" name="otp" maxlength="6" class="form-control" placeholder="Enter the 6-digit code" required>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label">Enter OTP</label>
-                <input type="text" name="otp" maxlength="6" class="form-control" placeholder="Enter the 6-digit code" required>
-            </div>
+        <button type="submit" class="btn btn-success w-100 mb-3">Verify OTP</button>
+      </form>
 
-            <a href="\Maktaba\modules\auth\login.php" class="btn btn-success btn-lg w-100 mb-3">Submit</a>
-        </form>
+      <?php echo $redirect; ?>
+
+      <p class="mb-0 mt-3">
+        <a href="resend_otp.php" class="text-primary text-decoration-none fw-semibold">Resend OTP</a>
+      </p>
     </div>
-</div>
-
+  </div>
 </body>
 </html>

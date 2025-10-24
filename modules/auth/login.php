@@ -12,7 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         $error = "Please enter both email and password.";
     } else {
-        $stmt = $conn->prepare("SELECT * FROM customers WHERE email = ?");
+        // FIX: Changed to 'users' table and added user_role, is_verified check
+        $stmt = $conn->prepare("SELECT user_id, full_name, email, password_hash, user_role, is_verified FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -20,10 +21,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            if (password_verify($password, $user['password_hash'])) {
-                $_SESSION['customer_id'] = $user['customer_id'];
-                $_SESSION['fullname'] = $user['full_name'];
-                header("Location: /Maktaba/modules/dashboard/dashboard.php");
+            // Check if user is verified
+            if (!$user['is_verified']) {
+                $error = "Please verify your email before logging in.";
+            } elseif (password_verify($password, $user['password_hash'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['full_name'] = $user['full_name'];
+                $_SESSION['user_role'] = $user['user_role'];
+                $_SESSION['email'] = $user['email'];
+                
+                // Redirect based on user role
+                if ($user['user_role'] === 'admin') {
+                    header("Location: /Maktaba/modules/admin/dashboard.php");
+                } else {
+                    header("Location: /Maktaba/modules/user/dashboard.php");
+                }
                 exit;
             } else {
                 $error = "Incorrect password.";
@@ -65,9 +77,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit" class="btn btn-success w-100 mb-3">Login</button>
       </form>
 
-      <p class="mb-0">Don’t have an account? 
-        <a href="/Maktaba/modules/auth/signup.php" class="text-primary fw-semibold text-decoration-none">Sign up here</a>
-      </p>
+      <div class="d-flex justify-content-between">
+        <a href="signup.php" class="text-primary text-decoration-none fw-semibold">Create Account</a>
+        <a href="reset_password.php" class="text-primary text-decoration-none fw-semibold">Forgot Password?</a>
+      </div>
     </div>
   </div>
 </body>

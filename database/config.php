@@ -3,7 +3,7 @@
 $host = 'localhost';   // or 'localhost'
 $port = 3306;          // custom MySQL port
 $user = 'root';
-$pass = '';     // adjust if your MySQL password differs
+$pass = 'maria';     // adjust if your MySQL password differs
 $dbname = 'maktaba';   // change if your actual database name differs
 
 // Create connection

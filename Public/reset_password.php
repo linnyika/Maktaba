@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ss", $new_pass, $email);
 
     if ($stmt->execute()) {
-        $message = "✅ Password updated successfully! You can now log in.";
+        $message = "Password updated successfully! You can now log in.";
     } else {
-        $message = "❌ Failed to reset password. Try again.";
+        $message = "Failed to reset password. Try again.";
     }
 }
 ?>

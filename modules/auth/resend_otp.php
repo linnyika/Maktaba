@@ -11,15 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result['success']) {
         $otp = $result['otp'];
-        // send new OTP email
+        // Send new OTP email
         $sent = sendOtpEmail($email, 'User', $otp);
         if ($sent) {
-            $message = "<p style='color:green; text-align:center;'>New OTP sent to your email.</p>";
+            $message = "<div class='alert alert-success text-center'>New OTP sent to your email.</div>";
         } else {
-            $message = "<p style='color:red; text-align:center;'>Could not send new OTP. Try again later.</p>";
+            $message = "<div class='alert alert-danger text-center'>Could not send new OTP. Try again later.</div>";
         }
     } else {
-        $message = "<p style='color:red; text-align:center;'>Error updating OTP. Please check your email and try again.</p>";
+        $message = "<div class='alert alert-danger text-center'>Error updating OTP. Please check your email and try again.</div>";
     }
 }
 ?>
@@ -29,17 +29,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Resend OTP - Maktaba</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
-<body style="font-family: Arial; background-color:#f8f9fa;">
-<div style="width:400px; margin:50px auto; background:white; padding:25px; border-radius:10px; box-shadow:0 0 8px rgba(0,0,0,0.1);">
-    <h2 style="text-align:center; color:#0056b3;">Resend OTP</h2>
-    <?= $message ?? '' ?>
-    <form method="POST" action="">
-        <label>Email:</label><br>
-        <input type="email" name="email" required style="width:100%; padding:8px;"><br><br>
-        <a href="modules/auth/verify_otp.php" class="btn btn-success w-100 mb-3">Resend OTP</a>
-    </form>
-</div>
+<body>
+  <div class="auth-container">
+    <div class="card p-4 border-0 shadow-lg text-center">
+      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
+      <h3 class="fw-bold text-primary mb-3">Resend OTP</h3>
+
+      <?php echo $message; ?>
+
+      <form method="POST" action="">
+        <div class="mb-3 text-start">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100 mb-3">Resend OTP</button>
+      </form>
+
+      <p class="mb-0">
+        <a href="verify_otp.php" class="text-primary text-decoration-none fw-semibold">Back to Verify OTP</a>
+      </p>
+    </div>
+  </div>
 </body>
 </html>

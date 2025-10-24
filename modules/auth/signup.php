@@ -13,7 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $otp = rand(100000, 999999);
     $otp_expiry = date('Y-m-d H:i:s', strtotime('+10 minutes'));
 
-    $check = $conn->prepare("SELECT email FROM customers WHERE email = ?");
+    // FIX: Changed to 'users' table
+    $check = $conn->prepare("SELECT email FROM users WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
     $result = $check->get_result();
@@ -21,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $message = "<div class='alert alert-warning'>Email already registered. Please log in.</div>";
     } else {
-        $stmt = $conn->prepare("INSERT INTO customers (full_name, email, password_hash, otp_code, otp_expiry, is_verified)
-                                VALUES (?, ?, ?, ?, ?, 0)");
+        // FIX: Changed to 'users' table and added user_role
+        $stmt = $conn->prepare("INSERT INTO users (full_name, email, password_hash, user_role, otp_code, otp_expiry, is_verified) 
+                                VALUES (?, ?, ?, 'customer', ?, ?, 0)");
         $stmt->bind_param("sssss", $full_name, $email, $password_hash, $otp, $otp_expiry);
 
         if ($stmt->execute()) {
