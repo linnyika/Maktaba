@@ -1,9 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// If user is not logged in, redirect to login
-if (!isset($_SESSION['customer_id'])) {
-    header("Location: ../auth/login.php");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../modules/auth/login.php");
     exit;
 }
 ?>

@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $message = "<div class='alert alert-warning'>Email already registered. Please log in.</div>";
     } else {
-        // FIX: Changed to 'users' table and added user_role
         $stmt = $conn->prepare("INSERT INTO users (full_name, email, password_hash, user_role, otp_code, otp_expiry, is_verified) 
                                 VALUES (?, ?, ?, 'customer', ?, ?, 0)");
         $stmt->bind_param("sssss", $full_name, $email, $password_hash, $otp, $otp_expiry);
@@ -48,13 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Maktaba | Sign Up</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Minty Bootswatch Theme -->
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
-<body>
-  <div class="auth-container">
-    <div class="card p-4 border-0 shadow-lg text-center">
-      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+
+  <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body text-center">
+      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="60" class="mb-3">
       <h3 class="fw-bold text-primary mb-3">Create Account</h3>
 
       <?php echo $message; ?>
@@ -75,10 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit" class="btn btn-success w-100 mb-3">Sign Up</button>
       </form>
 
-      <p class="mb-0">Already have an account?
+      <p class="mb-0">Already have an account? 
         <a href="login.php" class="text-primary text-decoration-none fw-semibold">Login here</a>
       </p>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

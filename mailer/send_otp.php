@@ -79,8 +79,6 @@ function sendOtpEmail($email, $name, $otp) {
         
     } catch (Exception $e) {
         error_log("Mailer Error: " . $mail->ErrorInfo);
-        // For debugging - you can temporarily echo the error
-        // echo "Email Error: " . $e->getMessage();
         return false;
     }
 }
