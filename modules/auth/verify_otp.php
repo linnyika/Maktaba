@@ -28,11 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/auth.css">
 </head>
-<body>
-  <div class="auth-container">
-    <div class="card p-4 border-0 shadow-lg text-center">
-      <img src="../../assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
-      <h3 class="fw-bold text-primary mb-3">Verify OTP</h3>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+  <div class="card shadow-lg border-0 p-4" style="width: 400px; border-radius: 15px;">
+    <div class="card-body">
+        <h3 class="text-center text-success mb-4">Verify OTP</h3>
 
       <?php echo $message; ?>
 
@@ -52,9 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <?php echo $redirect; ?>
 
-      <p class="mb-0 mt-3">
-        <a href="resend_otp.php" class="text-primary text-decoration-none fw-semibold">Resend OTP</a>
-      </p>
     </div>
   </div>
 </body>
