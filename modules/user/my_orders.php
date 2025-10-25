@@ -33,7 +33,7 @@ $result = $stmt->get_result();
         <tr>
           <th>Order ID</th>
           <th>Date</th>
-          <th>Total (₵)</th>
+          <th>Total (KSh)</th>
           <th>Order Status</th>
           <th>Payment Status</th>
         </tr>
