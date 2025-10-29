@@ -18,7 +18,7 @@ CREATE TABLE users (
     last_login TIMESTAMP NULL
 );
 
--- Publishers table
+-- Publishers tableI
 CREATE TABLE publishers (
     publisher_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,

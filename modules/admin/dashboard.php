@@ -76,11 +76,11 @@ while ($r = $res->fetch_assoc()) {
 
     <div class="collapse navbar-collapse" id="navAdmin">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="/modules/admin/manage_users.php">Users</a></li>
-        <li class="nav-item"><a class="nav-link" href="/modules/admin/manage_books.php">Books</a></li>
-        <li class="nav-item"><a class="nav-link" href="/modules/admin/manage_orders.php">Orders</a></li>
-        <li class="nav-item"><a class="nav-link" href="/modules/admin/manage_shipping.php">Shipping</a></li>
-        <li class="nav-item"><a class="nav-link" href="/modules/auth/logout.php">Logout</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_users.php">Users</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_books.php">Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_orders.php">Orders</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_shipping.php">Shipping</a></li>
+        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
       </ul>
     </div>
   </div>

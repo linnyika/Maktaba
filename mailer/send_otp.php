@@ -4,6 +4,7 @@ require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/PHPMailer/src/SMTP.php';
 require_once __DIR__ . '/PHPMailer/src/Exception.php';
 
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
@@ -16,8 +17,8 @@ function sendOtpEmail($email, $name, $otp) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'linda.nyika@strathmore.edu'; // Your email
-        $mail->Password = 'mrfe muln xnko abzc'; // Your app password
+        $mail->Username = 'barasaderrick44@gmail.com'; // Your email
+        $mail->Password = 'dzej kiju aqre vhjx'; // Your app password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         $mail->Timeout = 30;
@@ -26,9 +27,9 @@ function sendOtpEmail($email, $name, $otp) {
         $mail->SMTPDebug = 0; // Set to 2 for detailed debugging
 
         // Recipients
-        $mail->setFrom('linda.nyika@strathmore.edu', 'Maktaba Bookstore');
+        $mail->setFrom('barasaderrick44@gmail.com', 'Maktaba Bookstore');
         $mail->addAddress($email, $name);
-        $mail->addReplyTo('linda.nyika@strathmore.edu', 'Maktaba Support');
+        $mail->addReplyTo('barasaderrick44@gmail.com', 'Maktaba Support');
 
         // Content
         $mail->isHTML(true);
@@ -91,16 +92,16 @@ function sendPasswordResetOtp($email, $name, $otp) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'linda.nyika@strathmore.edu';
-        $mail->Password = 'mrfe muln xnko abzc';
+        $mail->Username = 'barasaderrick44@gmail.com';
+        $mail->Password = 'dzej kiju aqre vhjx';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         $mail->Timeout = 30;
 
         // Recipients
-        $mail->setFrom('linda.nyika@strathmore.edu', 'Maktaba Bookstore');
+        $mail->setFrom('barasaderrick44@gmail.com', 'Maktaba Bookstore');
         $mail->addAddress($email, $name);
-        $mail->addReplyTo('linda.nyika@strathmore.edu', 'Maktaba Support');
+        $mail->addReplyTo('barasaderrick44@gmail.com', 'Maktaba Support');
 
         // Content
         $mail->isHTML(true);
