@@ -1,11 +1,11 @@
 <?php
 // includes/mpesa_api.php
 // Basic M-Pesa setup (mock for Phase 1)
-
+include('config.php'); // database connection
 function initiatePayment($phone, $amount)
 {
     // Generate a mock transaction ID
-    $transaction_id = 'TXN' . rand(100000, 999999);
+    $transaction_id = 'TXN' . time();
 
     // Simulate response
     $response = [
