@@ -1,43 +1,34 @@
 <?php
 // includes/mpesa_api.php
-// Basic M-Pesa setup (mock for Phase 1)
-include('config.php'); // database connection
-function initiatePayment($phone, $amount)
+include('config.php');
+
+function initiateMpesaPayment($reservation_id, $amount, $phone)
 {
-    // Generate a mock transaction ID
-    $transaction_id = 'TXN' . time();
+    global $conn;
 
-    // Simulate response
-    $response = [
-        'TransactionID' => $transaction_id,
-        'Phone' => $phone,
-        'Amount' => $amount,
-        'Status' => 'Pending',
-        'Message' => 'Mock payment initiated successfully.'
-    ];
+    $transaction_id = 'TX' . time();
+    $receipt_number = 'RCP' . rand(1000, 9999);
+    $status = 'Pending';
 
-    // Log transaction (to file or DB)
-    logPayment($response);
+    $stmt = $conn->prepare("INSERT INTO payments
+        (order_id, amount, mpesa_phone, mpesa_transaction_id, mpesa_receipt_number, payment_status)
+        VALUES (?, ?, ?, ?, ?, ?)"
+    );
 
-    return $response;
-}
+    $stmt->bind_param("idssss", $reservation_id, $amount, $phone, $transaction_id, $receipt_number, $status);
 
-function checkPaymentStatus($transaction_id)
-{
-    // For Phase 1, simulate random success/failure
-    $status = (rand(1, 2) == 1) ? 'Success' : 'Failed';
-
-    return [
-        'TransactionID' => $transaction_id,
-        'Status' => $status,
-        'Message' => "Payment $status (simulated)"
-    ];
-}
-
-function logPayment($data)
-{
-    $logFile = __DIR__ . '/../logs/payment_logs.txt';
-    $logEntry = date('Y-m-d H:i:s') . " | " . json_encode($data) . PHP_EOL;
-    file_put_contents($logFile, $logEntry, FILE_APPEND);
+    if ($stmt->execute()) {
+        return [
+            'success' => true,
+            'transaction_id' => $transaction_id,
+            'receipt_number' => $receipt_number,
+            'message' => 'Payment initiated successfully.'
+        ];
+    } else {
+        return [
+            'success' => false,
+            'message' => 'Database error: ' . $stmt->error
+        ];
+    }
 }
 ?>
