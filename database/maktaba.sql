@@ -138,6 +138,23 @@ CREATE TABLE system_logs (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+
+
+CREATE TABLE IF NOT EXISTS reservations (
+    reservation_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
+    reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    pickup_date DATE NULL,
+    return_date DATE NULL,
+    status ENUM('Pending','Confirmed','Cancelled','Completed') DEFAULT 'Pending',
+    payment_status ENUM('Unpaid','Paid') DEFAULT 'Unpaid',
+    notes TEXT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
+);
+
 -- Insert default admin user
 INSERT INTO users (full_name, email, password_hash, user_role, is_verified) 
 VALUES ('Admin Maktaba', 'admin@maktaba.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1);
