@@ -48,9 +48,9 @@ $result = $conn->query($query);
                         <td><?= htmlspecialchars($row['order_status']) ?></td>
                         <td><?= htmlspecialchars($row['order_date']) ?></td>
                         <td>
-                            <form action="update_order_status.php" method="POST">
+<form action="../../modules/admin/update_order_status.php" method="POST">
                                 <input type="hidden" name="order_id" value="<?= $row['order_id'] ?>">
-                                <select name="order_status">
+                                <select name="status">
                                     <option value="Pending" <?= $row['order_status'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
                                     <option value="Processing" <?= $row['order_status'] == 'Processing' ? 'selected' : '' ?>>Processing</option>
                                     <option value="Completed" <?= $row['order_status'] == 'Completed' ? 'selected' : '' ?>>Completed</option>
