@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $book = $stmt->get_result()->fetch_assoc();
 
     if (!$book) {
-        $message = "❌ Invalid book selected.";
+        $message = " Invalid book selected.";
     } else {
         $total = $book['price'] * $quantity;
 

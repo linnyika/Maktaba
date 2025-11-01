@@ -18,13 +18,13 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
     if ($action === 'confirm') {
         $conn->query("UPDATE reservations SET status='Confirmed' WHERE reservation_id=$id");
-        $message = "✅ Reservation confirmed successfully!";
+        $message = "Reservation confirmed successfully!";
     } elseif ($action === 'cancel') {
         $conn->query("UPDATE reservations SET status='Cancelled' WHERE reservation_id=$id");
-        $message = "❌ Reservation cancelled successfully!";
+        $message = "Reservation cancelled successfully!";
     } elseif ($action === 'delete') {
         $conn->query("DELETE FROM reservations WHERE reservation_id=$id");
-        $message = "🗑️ Reservation deleted successfully!";
+        $message = "Reservation deleted successfully!";
     }
 }
 
@@ -77,7 +77,7 @@ $result = $conn->query($query);
 </head>
 <body>
     <div class="admin-container">
-        <h2>📚 Manage Reservations</h2>
+        <h2> Manage Reservations</h2>
         <?php if ($message): ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>

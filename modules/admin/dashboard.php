@@ -80,6 +80,7 @@ while ($r = $res->fetch_assoc()) {
         <li class="nav-item"><a class="nav-link" href="manage_books.php">Books</a></li>
         <li class="nav-item"><a class="nav-link" href="manage_orders.php">Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="manage_shipping.php">Shipping</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage_reviews.php">Reviews</a></li>
         <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
       </ul>
     </div>
