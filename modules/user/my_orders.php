@@ -26,7 +26,8 @@ $result = $stmt->get_result();
 
 <div class="container mt-5">
   <h2 class="text-center text-primary mb-4">My Orders</h2>
-<?php include('../../modules/admin/moodle_integration.php'); ?>
+<?php include('../../api/moodle_integration.php'); ?>
+
 
   <?php if ($result->num_rows > 0): ?>
     <table class="table table-bordered table-striped shadow-sm">
