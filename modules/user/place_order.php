@@ -1,7 +1,7 @@
 <?php
 // user/place_order.php
-include('../database/config.php');
-include('../includes/session_check.php');
+include('../../database/config.php');
+include('../../includes/session_check.php');
 
 $message = "";
 

@@ -1,7 +1,7 @@
 <?php
 // api/mpesa_payment.php
-include('../database/config.php');
-include('../includes/session_check.php');
+include('../../database/config.php');
+include('../../includes/session_check.php');
 
 // Identify transaction type
 $type = "";
