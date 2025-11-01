@@ -1,6 +1,6 @@
 <?php
 // user/reservations.php
-include('../includes/config.php');
+include('../database/config.php');
 include('../includes/session_check.php');
 
 $message = "";

@@ -1,6 +1,6 @@
 <?php
 // admin/manage_reservations.php
-include('../includes/config.php');
+include('../database/config.php');
 include('../includes/session_check.php');
 
 // Restrict to admin users only
