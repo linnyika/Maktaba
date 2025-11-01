@@ -26,6 +26,7 @@ $result = $stmt->get_result();
 
 <div class="container mt-5">
   <h2 class="text-center text-primary mb-4">My Orders</h2>
+<?php include('../../modules/admin/moodle_integration.php'); ?>
 
   <?php if ($result->num_rows > 0): ?>
     <table class="table table-bordered table-striped shadow-sm">
@@ -36,6 +37,8 @@ $result = $stmt->get_result();
           <th>Total (KSh)</th>
           <th>Order Status</th>
           <th>Payment Status</th>
+          <th>Actions</th>
+
         </tr>
       </thead>
       <tbody>
@@ -46,6 +49,11 @@ $result = $stmt->get_result();
             <td><?php echo number_format($row['total_amount'], 2); ?></td>
             <td><?php echo htmlspecialchars($row['order_status']); ?></td>
             <td><?php echo htmlspecialchars($row['payment_status']); ?></td>
+            <td>
+  <a href="order_details.php?order_id=<?php echo $row['order_id']; ?>" 
+     class="btn btn-sm btn-outline-primary">View Details</a>
+</td>
+
           </tr>
         <?php endwhile; ?>
       </tbody>
