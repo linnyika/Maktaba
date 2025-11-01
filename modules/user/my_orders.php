@@ -26,7 +26,8 @@ $result = $stmt->get_result();
 
 <div class="container mt-5">
   <h2 class="text-center text-primary mb-4">My Orders</h2>
-<?php include('../../api/moodle_integration.php'); ?>
+<?php $courses = include('../../api/moodle_integration.php'); ?>
+
 
 
   <?php if ($result->num_rows > 0): ?>
@@ -50,10 +51,21 @@ $result = $stmt->get_result();
             <td><?php echo number_format($row['total_amount'], 2); ?></td>
             <td><?php echo htmlspecialchars($row['order_status']); ?></td>
             <td><?php echo htmlspecialchars($row['payment_status']); ?></td>
-            <td>
+    <td>
   <a href="order_details.php?order_id=<?php echo $row['order_id']; ?>" 
      class="btn btn-sm btn-outline-primary">View Details</a>
+
+  <?php if(isset($courses[$row['order_id']])): ?>
+    <ul class="mb-0 mt-1">
+      <?php foreach($courses[$row['order_id']] as $course): ?>
+        <li style="font-size:0.9em;">
+          <?php echo htmlspecialchars($course['book_title']); ?> - Moodle ID: <?php echo $course['course_id']; ?>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  <?php endif; ?>
 </td>
+
 
           </tr>
         <?php endwhile; ?>
