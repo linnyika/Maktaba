@@ -45,37 +45,9 @@ $result = $conn->query($query);
     <meta charset="UTF-8">
     <title>Manage Reservations</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background: #333;
-            color: #fff;
-        }
-        .btn {
-            padding: 5px 10px;
-            border-radius: 4px;
-            text-decoration: none;
-            color: white;
-        }
-        .btn-confirm { background: #28a745; }
-        .btn-cancel { background: #dc3545; }
-        .btn-delete { background: #6c757d; }
-        .message {
-            margin: 15px 0;
-            color: green;
-        }
-    </style>
 </head>
 <body>
+<?php include("../../includes/admin_nav.php"); ?>
     <div class="admin-container">
         <h2> Manage Reservations</h2>
         <?php if ($message): ?>

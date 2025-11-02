@@ -45,6 +45,7 @@ $books = $conn->query("SELECT * FROM books ORDER BY date_added DESC");
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+<?php include("../../includes/admin_nav.php"); ?>
 <div class="container mt-5">
   <div class="card shadow p-4">
     <h3 class="text-success mb-3">Manage Inventory</h3>

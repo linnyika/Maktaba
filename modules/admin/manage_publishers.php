@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_publisher'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<?php include("../../includes/admin_nav.php"); ?>
 <div class="container mt-4">
     <h3>Manage Publishers</h3>
     <form method="POST" class="mb-4">

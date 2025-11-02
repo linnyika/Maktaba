@@ -49,21 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['
 <head>
 <meta charset="UTF-8">
 <title>My Profile | Maktaba</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-body { background-color: #e9f7ef; }
-.profile-card { border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-.profile-left { background: #28a745; color: white; padding: 2rem; text-align: center; }
-.profile-left img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; margin-bottom: 1rem; }
-.profile-left h4 { margin-bottom: 0.5rem; }
-.profile-left p { font-size: 0.9rem; }
-.profile-right { padding: 2rem; background: white; }
-.btn-edit { border-radius: 8px; transition: all 0.2s ease; }
-.btn-edit:hover { transform: translateY(-2px); }
-</style>
+<link rel="stylesheet" href="../../assets/css/user.css">
 </head>
 <body>
+<?php include("../../includes/user_nav.php"); ?>
 <div class="container my-5">
   <div class="row justify-content-center">
     <div class="col-md-10">

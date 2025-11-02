@@ -23,6 +23,7 @@ $result = $stmt->get_result();
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+<?php include("../../includes/user_nav.php"); ?>
 
 <div class="container mt-5">
   <h2 class="text-center text-primary mb-4">My Orders</h2>

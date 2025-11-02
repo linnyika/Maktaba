@@ -14,7 +14,7 @@ if (isset($_GET['order_id'])) {
     $reference_id = intval($_GET['reservation_id']);
     $type = "reservation";
 } else {
-    die("❌ Missing transaction reference (order_id or reservation_id).");
+    die(" Missing transaction reference (order_id or reservation_id).");
 }
 
 $user_id = $_SESSION['user_id'];
@@ -35,7 +35,7 @@ if ($type === "order") {
     $data = $stmt->get_result()->fetch_assoc();
 
     if (!$data) {
-        die("❌ Order not found.");
+        die("Order not found.");
     }
 
     $amount = $data['total_amount'];
@@ -54,7 +54,7 @@ if ($type === "order") {
     $data = $stmt->get_result()->fetch_assoc();
 
     if (!$data) {
-        die("❌ Reservation not found.");
+        die("Reservation not found.");
     }
 
     $amount = 200.00; // flat reservation fee
@@ -93,7 +93,7 @@ if ($insert->execute()) {
     </head>
     <body>
         <div class='container'>
-            <h2>✅ M-Pesa Payment Successful</h2>
+            <h2>M-Pesa Payment Successful</h2>
             <p><strong>Transaction ID:</strong> $mpesa_transaction_id</p>
             <p><strong>Receipt No:</strong> $mpesa_receipt_number</p>
             <p><strong>Amount:</strong> Ksh $amount</p>
@@ -106,6 +106,6 @@ if ($insert->execute()) {
     </html>
     ";
 } else {
-    echo "<h3>❌ Payment failed. Please try again later.</h3>";
+    echo "<h3>Payment failed. Please try again later.</h3>";
 }
 ?>

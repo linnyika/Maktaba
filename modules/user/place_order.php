@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../assets/css/user.css">
 </head>
 <body>
+<?php include("../../includes/user_nav.php"); ?>
     <div class="container">
         <h2>📚 Place a Book Order</h2>
         <?php if ($message): ?>

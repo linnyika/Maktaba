@@ -42,30 +42,8 @@ if (isset($_GET['clear_cart'])) {
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="../../index.php">
-      <img src="../../assets/img/sm.png" width="36" class="me-2"> Maktaba Bookstore
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMain">
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="browse_books.php">Browse</a></li>
-        <li class="nav-item"><a class="nav-link active" href="cart.php">Cart 
-            <?php if (!empty($_SESSION['cart'])): ?>
-            <span class="badge bg-danger"><?php echo count($_SESSION['cart']); ?></span>
-            <?php endif; ?>
-        </a></li>
-        <li class="nav-item"><a class="nav-link" href="my_orders.php">My Orders</a></li>
-        <li class="nav-item"><a class="nav-link" href="../../modules/auth/logout.php">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php include("../../includes/user_nav.php"); ?>
+
 
 <!-- Shopping Cart Content -->
 <main class="container my-5 flex-grow-1">

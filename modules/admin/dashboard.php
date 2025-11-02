@@ -62,30 +62,7 @@ while ($r = $res->fetch_assoc()) {
   <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="/index.php">
-      <img src="../../assets/img/sm.png" width="36" class="me-2"> Maktaba Admin
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navAdmin">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navAdmin">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="manage_users.php">Users</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_books.php">Books</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_orders.php">Orders</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_shipping.php">Shipping</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_reviews.php">Reviews</a></li>
-        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php include("../../includes/admin_nav.php"); ?>
 
 <!-- Main Content -->
 <main class="container my-5 flex-grow-1">

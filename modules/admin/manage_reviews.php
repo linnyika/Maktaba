@@ -58,26 +58,7 @@ while ($row = $res->fetch_assoc()) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="dashboard.php">Maktaba Admin</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navAdmin">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navAdmin">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_users.php">Users</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_books.php">Books</a></li>
-        <li class="nav-item"><a class="nav-link" href="manage_orders.php">Orders</a></li>
-        <li class="nav-item"><a class="nav-link active" href="manage_reviews.php">Reviews</a></li>
-        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php include("../../includes/admin_nav.php"); ?>
 
 <!-- Main Content -->
 <main class="container my-5">
@@ -141,10 +122,10 @@ while ($row = $res->fetch_assoc()) {
 </main>
 
 <!-- Footer -->
-<footer class="bg-primary text-white text-center py-3 mt-5">
-  <small>&copy; <?php echo date('Y'); ?> Maktaba Bookstore | Admin Panel</small>
+ 
+<footer class="bg-primary text-white text-center py-3 mt-auto">
+  <small>&copy; <?= date('Y') ?> Maktaba Bookstore | Admin Panel</small>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

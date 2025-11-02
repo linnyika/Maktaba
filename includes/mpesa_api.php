@@ -14,7 +14,7 @@ if (isset($_GET['reservation_id'])) {
     $reference_id = intval($_GET['order_id']);
     $type = "order";
 } else {
-    die("❌ Missing transaction reference (reservation_id or order_id).");
+    die("Missing transaction reference (reservation_id or order_id).");
 }
 
 // Common user info
@@ -82,13 +82,13 @@ if ($insert->execute()) {
         $conn->query("UPDATE orders SET payment_status='Paid' WHERE order_id=$reference_id");
     }
 
-    echo "<h2>✅ M-Pesa Payment Successful!</h2>";
+    echo "<h2>M-Pesa Payment Successful!</h2>";
     echo "<p><strong>Transaction ID:</strong> $mpesa_transaction_id</p>";
     echo "<p><strong>Amount:</strong> Ksh $amount</p>";
     echo "<p><strong>Type:</strong> " . ucfirst($type) . "</p>";
     echo "<p><strong>Description:</strong> $description</p>";
     echo "<a href='../user/dashboard.php'>Back to Dashboard</a>";
 } else {
-    echo "<h3>❌ Payment failed. Try again later.</h3>";
+    echo "<h3>Payment failed. Try again later.</h3>";
 }
 ?>
