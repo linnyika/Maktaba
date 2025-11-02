@@ -49,7 +49,7 @@ require_once __DIR__ . '/includes/functions.php';
     <div class="card-body text-center">
       <img src="assets/img/bg.png" alt="Maktaba Logo" width="70" class="mb-3">
       <h3 class="fw-bold text-primary mb-2">Welcome to Maktaba</h3>
-      <p class="text-muted mb-4">Your digital library — explore, learn, and grow.</p>
+      <p class="text-muted mb-4">Your digital bookstore explore, shop, learn, and grow.</p>
       <a href="modules/auth/signup.php" class="btn btn-success btn-lg w-100">Get Started</a>
     </div>
   </div>

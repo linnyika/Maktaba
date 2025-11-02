@@ -91,6 +91,11 @@ function cover_url($cover) {
       <ul class="navbar-nav ms-auto align-items-lg-center">
         <li class="nav-item"><a class="nav-link" href="my_orders.php">My Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="cart.php">Cart 
+            <?php if (!empty($_SESSION['cart'])): ?>
+            <span class="badge bg-danger"><?php echo count($_SESSION['cart']); ?></span>
+            <?php endif; ?>
+        </a></li>
         <li class="nav-item"><a class="nav-link" href="browse_books.php">Browse</a></li>
         <li class="nav-item"><a class="nav-link" href="reviews.php">Reviews</a></li>
         <li class="nav-item"><a class="nav-link" href="../../modules/auth/logout.php">Logout</a></li>
