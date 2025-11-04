@@ -4,6 +4,9 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once '../../vendor/autoload.php';
 require_once("../../database/config.php");
+require_once __DIR__ . '/../mailer/order_notifications.php';
+$mail->Body = orderEmailTemplate($new_status, $order);
+
 
 // --- Fetch order info ---
 $order_id = 123; // Replace dynamically

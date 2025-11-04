@@ -66,7 +66,7 @@ $users = $stmt->get_result();
       <div class="col-md-4">
         <select name="role" class="form-select">
           <option value="">All Roles</option>
-          <option value="user" <?= $role_filter === 'user' ? 'selected' : '' ?>>User</option>
+          <option value="user" <?= $role_filter === 'Customer' ? 'selected' : '' ?>>Customer</option>
           <option value="admin" <?= $role_filter === 'admin' ? 'selected' : '' ?>>Admin</option>
         </select>
       </div>
