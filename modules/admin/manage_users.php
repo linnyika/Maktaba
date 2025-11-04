@@ -82,7 +82,21 @@ $users = $stmt->get_result();
           </div>
         </form>
       </div>
+<<<<<<< HEAD
     </div>
+=======
+      <div class="col-md-4">
+        <select name="role" class="form-select">
+          <option value="">All Roles</option>
+          <option value="user" <?= $role_filter === 'Customer' ? 'selected' : '' ?>>Customer</option>
+          <option value="admin" <?= $role_filter === 'admin' ? 'selected' : '' ?>>Admin</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-grid">
+        <button type="submit" class="btn btn-success">Apply Filter</button>
+      </div>
+    </form>
+>>>>>>> 1d15ad97a48ed5a4ed0b2b7a7d4e305a4b69c3e9
 
     <!-- Users Table -->
     <div class="table-wrapper shadow-sm rounded bg-white p-3">

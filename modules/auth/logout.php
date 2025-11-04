@@ -2,6 +2,7 @@
 session_start();
 $_SESSION = array();
 session_unset();
+logActivity($_SESSION['user_id'], "User logged out");
 session_destroy();
 ?>
 

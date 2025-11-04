@@ -2,6 +2,7 @@
 ini_set('session.cookie_path', '/');
 session_start();
 require_once("../../database/config.php");
+require_once("../../includes/logger.php");
 
 $error = "";
 
@@ -26,25 +27,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Please verify your email before logging in.";
             } elseif (password_verify($password, $user['password_hash'])) {
 
-                // ✅ Correct session variable names
+                // ✅ Set session variables
                 $_SESSION['user_id']   = $user['user_id'];
-                $_SESSION['user_name'] = $user['full_name']; // <-- fixed
+                $_SESSION['user_name'] = $user['full_name'];
                 $_SESSION['full_name'] = $user['full_name'];
                 $_SESSION['user_role'] = $user['user_role'];
                 $_SESSION['email']     = $user['email'];
 
-                // ✅ Use relative path for portability
+                // ✅ Log successful login
+                logActivity($user['user_id'], "LOGIN", "Authentication", "User logged in successfully.");
+
+                // ✅ Redirect by role
                 if ($user['user_role'] === 'admin') {
                     header("Location: ../admin/dashboard.php");
                 } else {
                     header("Location: ../user/dashboard.php");
                 }
                 exit;
+
             } else {
                 $error = "Incorrect password.";
+                logActivity(0, "FAILED_LOGIN", "Authentication", "Incorrect password for $email.");
             }
         } else {
             $error = "No account found with that email.";
+            logActivity(0, "FAILED_LOGIN", "Authentication", "Login attempt with unknown email $email.");
         }
     }
 }
