@@ -9,14 +9,14 @@ class DataProcessor {
         $this->conn = $conn;
     }
 
-    // 🔹 Total number of orders
+    //  Total number of orders
     public function getTotalOrders() {
         $sql = "SELECT COUNT(*) AS total_orders FROM orders";
         $res = $this->conn->query($sql);
         return $res ? $res->fetch_assoc()['total_orders'] : 0;
     }
 
-    // 🔹 Total revenue from all paid orders
+    //  Total revenue from paid orders
     public function getTotalRevenue() {
         $sql = "SELECT SUM(total_amount) AS total_revenue 
                 FROM orders 
@@ -25,7 +25,7 @@ class DataProcessor {
         return $res ? $res->fetch_assoc()['total_revenue'] : 0;
     }
 
-    // 🔹 Top 5 selling books (by quantity)
+    //  Top 5 selling books by quantity
     public function getTopBooks() {
         $sql = "
             SELECT b.title, SUM(oi.quantity) AS total_sold
@@ -41,7 +41,7 @@ class DataProcessor {
         return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    // 🔹 Revenue grouped by month (for charts)
+    //  Revenue grouped by month (for charts)
     public function getMonthlyRevenue() {
         $sql = "
             SELECT DATE_FORMAT(order_date, '%Y-%m') AS month,
@@ -55,7 +55,7 @@ class DataProcessor {
         return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    // 🔹 User-specific order summary
+    //  User-specific order summary
     public function getUserSummary($user_id) {
         $sql = "
             SELECT 
@@ -68,7 +68,7 @@ class DataProcessor {
         return $res ? $res->fetch_assoc() : ['total_orders'=>0,'total_spent'=>0];
     }
 
-    // 🔹 Overall average rating
+    //  Overall average rating
     public function getAverageRating() {
         $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating FROM reviews WHERE is_approved = 1";
         $res = $this->conn->query($sql);
