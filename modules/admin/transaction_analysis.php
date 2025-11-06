@@ -1,87 +1,107 @@
 <?php
-include_once "../../includes/session_check.php";
-include_once "../../database/config.php";
+include("../includes/session_check.php");
+include("../database/config.php");
 
-// Default values for filters
-$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : "";
-$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : "";
-$status = isset($_GET['status']) ? $_GET['status'] : "";
+// Allow only admin
+if ($_SESSION['role'] !== "admin") {
+    header("Location: ../login.php");
+    exit();
+}
+
+// Filters
+$start_date = $_GET['start_date'] ?? "";
+$end_date = $_GET['end_date'] ?? "";
+$status = $_GET['status'] ?? "";
 
 // Base query
-$query = "SELECT * FROM mpesa_payments WHERE 1";
+$query = "
+    SELECT p.*, c.full_name
+    FROM payments p
+    LEFT JOIN customers c ON p.user_id = c.customer_id
+    WHERE 1
+";
 
-// Apply filters if provided
 if (!empty($start_date) && !empty($end_date)) {
-    $query .= " AND date(timestamp) BETWEEN '$start_date' AND '$end_date'";
+    $query .= " AND DATE(p.created_at) BETWEEN '$start_date' AND '$end_date'";
 }
 
 if (!empty($status)) {
-    $query .= " AND status='$status'";
+    $query .= " AND p.payment_status = '$status'";
 }
 
-$query .= " ORDER BY timestamp DESC";
+$query .= " ORDER BY p.created_at DESC";
+$result = $conn->query($query);
 
-// Execute query
-$result = mysqli_query($conn, $query);
-
-// Calculate total revenue
-$total_query = "SELECT SUM(amount) AS total_amount FROM mpesa_payments WHERE status='Success'";
-$total_result = mysqli_query($conn, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_revenue = $total_row['total_amount'] ?? 0;
+// Total revenue from successful payments
+$total_query = "SELECT SUM(amount) AS total_amount FROM payments WHERE payment_status='Paid'";
+$total_result = $conn->query($total_query);
+$total_revenue = $total_result->fetch_assoc()['total_amount'] ?? 0;
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Transaction Analysis</title>
-    <link rel="stylesheet" href="../../assets/styles.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
-<?php include "../navbar.php"; ?>
+<?php include("../includes/admin_nav.php"); ?>
 
-<div class="container">
-    <h2>📊 Transaction Analysis</h2>
+<div class="admin-container">
+    <h2>📊 Transaction & Payment Analysis</h2>
 
-    <form method="GET" style="margin-bottom: 20px;">
+    <form method="GET" class="filter-form">
         <label>Start Date:</label>
         <input type="date" name="start_date" value="<?= $start_date ?>">
-        
+
         <label>End Date:</label>
         <input type="date" name="end_date" value="<?= $end_date ?>">
 
         <label>Status:</label>
         <select name="status">
             <option value="">All</option>
-            <option value="Success" <?= ($status == "Success") ? "selected" : "" ?>>Success</option>
+            <option value="Paid" <?= ($status == "Paid") ? "selected" : "" ?>>Paid</option>
+            <option value="Pending" <?= ($status == "Pending") ? "selected" : "" ?>>Pending</option>
             <option value="Failed" <?= ($status == "Failed") ? "selected" : "" ?>>Failed</option>
         </select>
 
-        <button type="submit">Filter</button>
+        <button type="submit" class="btn btn-confirm">Apply Filters</button>
+        <a href="../api/export_api.php?type=payments" class="btn btn-alt">📄 Export Payments</a>
     </form>
 
-    <h3>Total Revenue (Successful Payments): <strong>KES <?= number_format($total_revenue, 2) ?></strong></h3>
+    <h3>Total Revenue: <strong>KES <?= number_format($total_revenue, 2) ?></strong></h3>
 
-    <table border="1" cellpadding="8" width="100%">
-        <tr>
-            <th>Transaction ID</th>
-            <th>Phone</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Timestamp</th>
-        </tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>User</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Transaction ID</th>
+                <th>Receipt</th>
+                <th>Phone</th>
+                <th>Date</th>
+            </tr>
+        </thead>
 
-        <?php while ($row = mysqli_fetch_assoc($result)): ?>
-        <tr>
-            <td><?= $row['transaction_id'] ?></td>
-            <td><?= $row['phone'] ?></td>
-            <td>KES <?= number_format($row['amount'], 2) ?></td>
-            <td><?= $row['status'] ?></td>
-            <td><?= $row['timestamp'] ?></td>
-        </tr>
-        <?php endwhile; ?>
-        
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= $row['payment_id'] ?></td>
+                    <td><?= $row['full_name'] ?></td>
+                    <td><?= $row['payment_method'] ?></td>
+                    <td><?= $row['payment_status'] ?></td>
+                    <td>KES <?= number_format($row['amount'], 2) ?></td>
+                    <td><?= $row['mpesa_transaction_id'] ?></td>
+                    <td><?= $row['mpesa_receipt_number'] ?></td>
+                    <td><?= $row['mpesa_phone'] ?></td>
+                    <td><?= $row['created_at'] ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
     </table>
 </div>
 
