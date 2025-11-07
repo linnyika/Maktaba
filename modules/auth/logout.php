@@ -1,14 +1,18 @@
 <?php
 session_start();
+
+// Include logger
+require_once(__DIR__ . '/../../includes/logger.php');
+
+// Get user ID before destroying session
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+// Log activity
+logActivity($user_id, "LOGOUT", "Authentication", "User logged out.");
+
+// Destroy session
 $_SESSION = array();
 session_unset();
-// Provide default or appropriate values for the missing arguments
-logActivity(
-    isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null, // user_id
-    "User logged out",                                          // activity
-    null,                                                       // third argument (e.g., details)
-    null                                                        // fourth argument (e.g., timestamp)
-);
 session_destroy();
 ?>
 

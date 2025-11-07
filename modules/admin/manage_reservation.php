@@ -54,6 +54,10 @@ $result = $conn->query($query);
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>
 
+        <a href="../api/export_api.php?type=reservations" class="btn btn-confirm" style="margin-bottom: 15px;">
+           Export Reservations
+         </a>
+
         <table>
             <thead>
                 <tr>
