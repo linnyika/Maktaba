@@ -2,27 +2,34 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-include '../../includes/admin_check.php';
-include '../../database/config.php';
+require_once '../../includes/admin_check.php';
+require_once '../../database/config.php';
 
-// check if form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $order_id = $_POST['order_id'];
-    $status = $_POST['status'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $order_id = intval($_POST['order_id']);
+    $status = trim($_POST['status']);
 
-    // update the order status
+    // ✅ Allowed ENUM values from DB
+    $allowed_status = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
+
+    // ✅ Check if valid
+    if (!in_array($status, $allowed_status)) {
+        die("Invalid order status value: " . htmlspecialchars($status));
+    }
+
+    // ✅ Update safely
     $stmt = $conn->prepare("UPDATE orders SET order_status = ? WHERE order_id = ?");
     $stmt->bind_param("si", $status, $order_id);
 
     if ($stmt->execute()) {
-        // redirect back to manage orders
         header("Location: manage_orders.php?success=1");
         exit;
     } else {
-        echo "Error updating order: " . $conn->error;
+        echo "❌ Error updating order: " . $conn->error;
     }
 
     $stmt->close();
 }
+
 $conn->close();
 ?>

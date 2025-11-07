@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/../../includes/session_check.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Handle cart actions
 if (isset($_GET['remove'])) {
     $remove_id = (int)$_GET['remove'];

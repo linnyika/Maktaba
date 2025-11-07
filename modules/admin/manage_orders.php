@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../includes/session_check.php';
 require_once __DIR__ . '/../../includes/admin_check.php';
 require_once __DIR__ . '/../../database/config.php';
 
+// Fetch all orders with user info
 $query = "
     SELECT 
         o.order_id, 
@@ -15,9 +16,9 @@ $query = "
     JOIN users u ON o.user_id = u.user_id
     ORDER BY o.order_date DESC
 ";
-
 $result = $conn->query($query);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,12 +29,21 @@ $result = $conn->query($query);
   <link rel="stylesheet" href="../../assets/css/admin.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
+
   <?php include("../../includes/admin_nav.php"); ?>
 
   <main class="container my-5 flex-grow-1">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="fw-bold text-primary">Manage Orders</h3>
     </div>
+
+    <!-- ✅ Success message -->
+    <?php if (isset($_GET['success'])): ?>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✅ Order status updated successfully.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php endif; ?>
 
     <div class="table-wrapper shadow-sm rounded bg-white p-3">
       <table class="table table-striped table-hover align-middle">
@@ -59,8 +69,8 @@ $result = $conn->query($query);
                     <?php 
                       echo match($row['order_status']) {
                         'Pending' => 'bg-warning text-dark',
-                        'Processing' => 'bg-info text-dark',
-                        'Completed' => 'bg-success',
+                        'Shipped' => 'bg-info text-dark',
+                        'Delivered' => 'bg-success',
                         'Cancelled' => 'bg-danger',
                         default => 'bg-secondary'
                       };
@@ -74,7 +84,7 @@ $result = $conn->query($query);
                     <input type="hidden" name="order_id" value="<?= $row['order_id'] ?>">
                     <select name="status" class="form-select form-select-sm" style="width:auto;">
                       <?php
-                        $statuses = ['Pending','Processing','Completed','Cancelled'];
+                        $statuses = ['Pending','Shipped','Delivered','Cancelled'];
                         foreach ($statuses as $status) {
                           $selected = ($row['order_status'] === $status) ? 'selected' : '';
                           echo "<option value='$status' $selected>$status</option>";
