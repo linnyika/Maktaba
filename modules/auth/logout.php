@@ -2,7 +2,13 @@
 session_start();
 $_SESSION = array();
 session_unset();
-logActivity($_SESSION['user_id'], "User logged out");
+// Provide default or appropriate values for the missing arguments
+logActivity(
+    isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null, // user_id
+    "User logged out",                                          // activity
+    null,                                                       // third argument (e.g., details)
+    null                                                        // fourth argument (e.g., timestamp)
+);
 session_destroy();
 ?>
 
