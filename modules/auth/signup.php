@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $message = "<div class='alert alert-danger'>Account created but OTP email failed to send. Contact admin.</div>";
             }
+            logActivity($conn->insert_id, "New user registered: $full_name ($email)");
         } else {
             $message = "<div class='alert alert-danger'>Something went wrong: " . $stmt->error . "</div>";
         }

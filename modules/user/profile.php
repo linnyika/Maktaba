@@ -1,164 +1,194 @@
 <?php
 require_once("../../database/config.php");
 require_once("../../includes/session_check.php");
+require_once("../../includes/audit_helper.php"); // for logging
 
 $user_id = $_SESSION['user_id'];
 $message = "";
-$message_type = "";
 
 // Fetch user data
-$stmt = $conn->prepare("SELECT full_name, email, phone, preferences FROM users WHERE user_id = ?");
+$stmt = $conn->prepare("SELECT full_name, email, phone, preferences, avatar FROM users WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
-// Handle AJAX save request from modal
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['action']) && $_POST['action'] === 'update_profile') {
-    $full_name = trim($_POST['full_name']);
-    $phone = trim($_POST['phone']);
-    $preferencesArray = $_POST['preferences'] ?? [];
-    $preferences = implode(',', $preferencesArray);
+// Update profile
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $full_name = trim($_POST['full_name'] ?? $user['full_name']);
+    $email = trim($_POST['email'] ?? $user['email']);
+    $phone = trim($_POST['phone'] ?? $user['phone']);
+    $preferences = trim($_POST['preferences'] ?? $user['preferences']);
+    $avatar = $user['avatar'];
 
-    if (empty($full_name)) {
-        $message = "Full name cannot be empty.";
-        $message_type = "danger";
-    } elseif (!empty($phone) && !preg_match("/^[0-9+]{7,15}$/", $phone)) {
-        $message = "Phone number is invalid.";
-        $message_type = "danger";
-    } else {
-        $update = $conn->prepare("UPDATE users SET full_name=?, phone=?, preferences=? WHERE user_id=?");
-        $update->bind_param("sssi", $full_name, $phone, $preferences, $user_id);
+    // Handle avatar upload
+    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = "../../assets/uploads/avatars/";
+        if (!file_exists($upload_dir)) mkdir($upload_dir, 0777, true);
+
+        $file_tmp = $_FILES['avatar']['tmp_name'];
+        $file_ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($file_ext, $allowed)) {
+            $new_filename = "avatar_" . $user_id . "_" . time() . "." . $file_ext;
+            $destination = $upload_dir . $new_filename;
+            if (move_uploaded_file($file_tmp, $destination)) {
+                $avatar = "/assets/uploads/avatars/" . $new_filename;
+            }
+        }
+    }
+
+    if (!empty($full_name) && !empty($email)) {
+        $update = $conn->prepare("UPDATE users SET full_name=?, email=?, phone=?, preferences=?, avatar=? WHERE user_id=?");
+        $update->bind_param("sssssi", $full_name, $email, $phone, $preferences, $avatar, $user_id);
 
         if ($update->execute()) {
-            $message = "Profile updated successfully.";
-            $message_type = "success";
+            $message = '<div class="alert alert-success mt-3">Profile updated successfully.</div>';
+            logActivity($user_id, "Profile Update", "User", "Updated their profile details");
             $stmt->execute();
             $user = $stmt->get_result()->fetch_assoc();
         } else {
-            $message = "Failed to update profile.";
-            $message_type = "danger";
+            $message = '<div class="alert alert-danger mt-3">Error updating profile. Please try again.</div>';
         }
+    } else {
+        $message = '<div class="alert alert-warning mt-3">Full name and email are required.</div>';
     }
-    header('Content-Type: application/json');
-    echo json_encode(['message' => $message, 'type' => $message_type]);
-    exit;
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>My Profile | Maktaba</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-body { background-color: #e9f7ef; }
-.profile-card { border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-.profile-left { background: #28a745; color: white; padding: 2rem; text-align: center; }
-.profile-left img { width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; margin-bottom: 1rem; }
-.profile-left h4 { margin-bottom: 0.5rem; }
-.profile-left p { font-size: 0.9rem; }
-.profile-right { padding: 2rem; background: white; }
-.btn-edit { border-radius: 8px; transition: all 0.2s ease; }
-.btn-edit:hover { transform: translateY(-2px); }
-</style>
-<link rel="stylesheet" href="../../assets/css/user.css">
+  <meta charset="UTF-8">
+  <title>My Profile | Maktaba</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body { background-color: #f8fafc; }
+    .profile-card {
+      border: none;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+    .avatar-wrapper {
+      text-align: center;
+      margin-top: -70px;
+      position: relative;
+    }
+    .avatar-wrapper img {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      object-fit: cover;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease-in-out;
+    }
+    .avatar-wrapper img:hover { transform: scale(1.05); }
+    .avatar-wrapper button {
+      position: absolute;
+      bottom: 10px;
+      right: 35%;
+      transform: translateX(50%);
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
-<?php include("../../includes/user_nav.php"); ?>
-<div class="container my-5">
-  <div class="row justify-content-center">
-    <div class="col-md-10">
-      <?php if ($message): ?>
-        <div class="alert alert-<?= $message_type ?>"><?= htmlspecialchars($message) ?></div>
-      <?php endif; ?>
-      <div class="profile-card d-flex flex-wrap">
-        <!-- Left section -->
-        <div class="profile-left col-md-4 d-flex flex-column align-items-center justify-content-center">
-          <img src="https://via.placeholder.com/120" alt="Avatar">
-          <h4><?= htmlspecialchars($user['full_name'] ?? 'User') ?></h4>
-          <p><?= htmlspecialchars($user['email'] ?? 'Email') ?></p>
+  <?php include("../../includes/user_nav.php"); ?>
+
+  <main class="container py-5">
+    <div class="card profile-card shadow-lg mx-auto" style="max-width: 700px;">
+      <div class="card-header bg-primary text-white text-center position-relative" style="height: 150px;">
+        <h3 class="mt-4 fw-bold"><i class="bi bi-person-circle me-2"></i>My Profile</h3>
+      </div>
+
+      <!-- Avatar with overlay -->
+      <div class="avatar-wrapper">
+        <img id="avatarPreview" src="<?= !empty($user['avatar']) ? htmlspecialchars($user['avatar']) : '/assets/img/default-avatar.png' ?>" alt="User Avatar">
+        <button class="btn btn-sm btn-light shadow-sm" data-bs-toggle="modal" data-bs-target="#avatarModal">
+          <i class="bi bi-camera-fill text-primary"></i>
+        </button>
+      </div>
+
+      <div class="card-body px-5 pb-4">
+        <?= $message ?>
+        <div class="text-center mt-3">
+          <h5 class="fw-semibold"><?= htmlspecialchars($user['full_name']) ?></h5>
+          <p class="text-muted mb-1"><i class="bi bi-envelope me-2"></i><?= htmlspecialchars($user['email']) ?></p>
+          <p class="text-muted mb-1"><i class="bi bi-telephone me-2"></i><?= htmlspecialchars($user['phone'] ?: 'N/A') ?></p>
+          <p class="text-muted"><i class="bi bi-heart me-2"></i><?= htmlspecialchars($user['preferences'] ?: 'No preferences set') ?></p>
         </div>
-        <!-- Right section (read-only info) -->
-        <div class="profile-right col-md-8">
-          <p><strong>Phone:</strong> <?= htmlspecialchars($user['phone'] ?? '—') ?></p>
-          <p><strong>Preferred Genres:</strong>
-            <?php
-              if(!empty($user['preferences'])){
-                  echo htmlspecialchars(str_replace(',', ', ', $user['preferences']));
-              } else {
-                  echo '—';
-              }
-            ?>
-          </p>
-          <button class="btn btn-success mt-3 btn-edit" data-bs-toggle="modal" data-bs-target="#editModal">
-            <i class="bi bi-pencil-square"></i> Edit Profile
+        <div class="text-center mt-4">
+          <button class="btn btn-outline-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            <i class="bi bi-pencil-square me-1"></i>Edit Profile
           </button>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </main>
 
-<!-- Modal for editing -->
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="editProfileForm">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title">Edit Profile</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Full Name</label>
-            <input type="text" name="full_name" class="form-control" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" required>
+  <!-- Avatar Modal -->
+  <div class="modal fade" id="avatarModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" enctype="multipart/form-data">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title"><i class="bi bi-person-bounding-box me-2"></i>Change Avatar</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Phone</label>
-            <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
+          <div class="modal-body text-center">
+            <img id="avatarModalPreview" src="<?= !empty($user['avatar']) ? htmlspecialchars($user['avatar']) : '/assets/img/default-avatar.png' ?>" 
+                 class="rounded-circle mb-3" style="width:120px; height:120px; object-fit:cover;">
+            <input type="file" name="avatar" id="avatarInputModal" class="form-control" accept="image/*">
           </div>
-          <div class="mb-3">
-            <label class="form-label">Preferred Genres</label>
-            <select name="preferences[]" class="form-select" multiple>
-              <?php
-                $genres = ['Fiction','Non-Fiction','Mystery','Fantasy','Science Fiction','Romance','Thriller','Biography','History'];
-                $selected = isset($user['preferences']) ? explode(',', $user['preferences']) : [];
-                foreach($genres as $genre){
-                    $isSelected = in_array($genre, $selected) ? 'selected' : '';
-                    echo "<option value=\"$genre\" $isSelected>$genre</option>";
-                }
-              ?>
-            </select>
-            <small class="text-muted">Hold Ctrl (Cmd on Mac) to select multiple genres.</small>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Save</button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-success">Save Changes</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.getElementById('editProfileForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const formData = new FormData(this);
-    formData.append('action', 'update_profile');
+  <!-- Edit Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Edit Profile</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Full Name</label>
+              <input type="text" name="full_name" value="<?= htmlspecialchars($user['full_name']) ?>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+              <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Phone</label>
+              <input type="text" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Preferences</label>
+              <textarea name="preferences" class="form-control" rows="3"><?= htmlspecialchars($user['preferences']) ?></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success fw-semibold"><i class="bi bi-save me-1"></i>Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-    fetch('', { method: 'POST', body: formData })
-      .then(res => res.json())
-      .then(data => {
-          alert(data.message);
-          if(data.type === 'success') {
-              location.reload(); // refresh page to show updated data
-          }
-      });
-});
-</script>
-</body>
-</html>
+  <footer class="bg-primary text-white text-center py-3 mt-auto">
+    <small>&copy; <?= date('Y') ?> Maktaba Bookstore | User Profile</small>
+  </footer>
+
+  <
