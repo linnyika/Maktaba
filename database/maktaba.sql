@@ -177,3 +177,18 @@ MODIFY COLUMN timestamp DATETIME DEFAULT CURRENT_TIMESTAMP;
 
 Also add this ALTER TABLE logs 
 MODIFY COLUMN user_id INT NULL;
+
+ CREATE TABLE IF NOT EXISTS cart (
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+ALTER TABLE reservations 
+MODIFY COLUMN status ENUM('Pending','Approved','Cancelled') DEFAULT 'Pending';
