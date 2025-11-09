@@ -25,9 +25,19 @@ switch ($type) {
         break;
 
     case 'user_summary':
-        $user_id = (int)($_GET['user_id'] ?? 0);
+        $user_id = (int)($_GET['id'] ?? $_GET['user_id'] ?? 0);
+
         echo json_encode($processor->getUserSummary($user_id));
         break;
+
+      case 'user_orders':
+    echo json_encode($processor->getUserOrdersForChart($user_id));
+    break;
+
+case 'user_spending':
+    echo json_encode($processor->getUserSpendingForChart($user_id));
+    break;
+  
 
     default:
         echo json_encode(['error' => 'Invalid or missing type parameter']);
