@@ -11,8 +11,8 @@ $end   = date('Y-m-t');
 $summaryHelper = new SummaryHelper($conn);
 $sales  = $summaryHelper->getMonthlyRevenueSummary();
 $books  = $summaryHelper->getTopBooksSummary();
-$users  = getUserRoleDistribution($conn);
-$logs   = getRecentLogs($conn);
+$users  = $summaryHelper->getUserRoleDistribution();
+$logs   = $summaryHelper->getRecentLogs();
 ?>
 
 <!DOCTYPE html>
