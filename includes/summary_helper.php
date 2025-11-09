@@ -54,6 +54,24 @@ class SummaryHelper {
     public function getUserSpendingChart($user_id) {
         return $this->processor->getUserSpendingForChart($user_id);
     }
+
+public function getUserRoleDistribution() {
+    $sql = "SELECT user_role, COUNT(*) AS total FROM users GROUP BY user_role";
+    $res = $this->processor->getConnection()->query($sql); 
+    return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+}
+
+public function getRecentLogs() {
+    $sql = "SELECT u.full_name, l.action, l.timestamp
+            FROM activity_logs l
+            LEFT JOIN users u ON l.user_id = u.user_id
+            ORDER BY l.timestamp DESC
+            LIMIT 10";
+    $res = $this->processor->getConnection()->query($sql);
+    return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+}
+
+
 }
 
 // -------------------------
