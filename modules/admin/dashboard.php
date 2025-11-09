@@ -66,35 +66,39 @@ while ($r = $res->fetch_assoc()) {
 
 <!-- Main Content -->
 <main class="container my-5 flex-grow-1">
-  <header class="mb-4">
-    <h3 class="fw-bold">Admin Dashboard</h3>
+
+  <!-- Header with User Activity Reports Button -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div class="d-flex align-items-center mb-3 mb-md-0">
+      <h3 class="fw-bold mb-0 me-3">Admin Dashboard</h3>
+    </div>
     <p class="text-muted mb-0">Welcome back, <?php echo htmlspecialchars($_SESSION['full_name'] ?? 'Admin'); ?></p>
-  </header>
+  </div>
 
   <!-- Dashboard Buttons -->
   <div class="row g-3 mb-5 text-center">
-    <div class="col-md-3 col-6">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <div class="btn btn-lg btn-outline-primary w-100 py-3 rounded-4 shadow-sm">
         <i class="bi bi-people-fill fs-3 mb-1"></i><br>
         <strong><?php echo $counts['users']; ?></strong><br>
         <small>Users</small>
       </div>
     </div>
-    <div class="col-md-3 col-6">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <div class="btn btn-lg btn-outline-success w-100 py-3 rounded-4 shadow-sm">
         <i class="bi bi-book-half fs-3 mb-1"></i><br>
         <strong><?php echo $counts['books']; ?></strong><br>
         <small>Books</small>
       </div>
     </div>
-    <div class="col-md-3 col-6">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <div class="btn btn-lg btn-outline-info w-100 py-3 rounded-4 shadow-sm">
         <i class="bi bi-cart-check fs-3 mb-1"></i><br>
         <strong><?php echo $counts['orders_total']; ?></strong><br>
         <small>Orders (<?php echo $counts['orders_pending']; ?> pending)</small>
       </div>
     </div>
-    <div class="col-md-3 col-6">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <div class="btn btn-lg btn-outline-warning w-100 py-3 rounded-4 shadow-sm">
         <i class="bi bi-truck fs-3 mb-1"></i><br>
         <strong><?php echo $counts['shipping_pending']; ?></strong><br>
@@ -133,9 +137,11 @@ while ($r = $res->fetch_assoc()) {
                 <td><?php echo htmlspecialchars($r['full_name'] ?? '—'); ?></td>
                 <td><?php echo htmlspecialchars(date('d M Y', strtotime($r['order_date']))); ?></td>
                 <td><?php echo number_format((float)$r['total_amount'], 2); ?></td>
-                <td><span class="badge bg-<?php echo ($r['order_status'] === 'Pending') ? 'warning' : (($r['order_status'] === 'Completed') ? 'success' : 'info'); ?>">
+                <td>
+                  <span class="badge bg-<?php echo ($r['order_status'] === 'Pending') ? 'warning' : (($r['order_status'] === 'Completed') ? 'success' : 'info'); ?>">
                     <?php echo htmlspecialchars($r['order_status']); ?>
-                </span></td>
+                  </span>
+                </td>
                 <td>
                   <span class="badge bg-<?php echo ($r['payment_status'] === 'Paid') ? 'success' : 'secondary'; ?>">
                     <?php echo htmlspecialchars($r['payment_status']); ?>

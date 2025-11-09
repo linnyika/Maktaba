@@ -1,15 +1,18 @@
-<<<<<<< HEAD
+/* Combined CSS */
+
 body {
-  background-color: #f8fafc;
+  background-color: #f8f9fa;
 }
+
 .card {
   border-radius: 10px;
   overflow: hidden;
 }
+
 .table thead th {
   background-color: #c1f0e3;
 }
-=======
+
 /* analytics.css – Member 5 Visualization Styling */
 
 .analytics-card {
@@ -40,10 +43,6 @@ canvas {
   height: 280px;
 }
 
-body {
-  background-color: #f8f9fa;
-}
-
 .text-primary {
   color: #0056b3 !important;
 }
@@ -55,4 +54,3 @@ body {
 h2.fw-bold {
   font-size: 1.8rem;
 }
->>>>>>> 01d33dc84fd81d92c468b125c2b84e5e7d1486d0
