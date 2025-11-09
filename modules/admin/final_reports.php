@@ -1,14 +1,16 @@
 <?php
 require_once("../../includes/session_check.php");
 require_once("../../includes/admin_check.php");
-require_once("../../includes/report_helper.php");
+require_once("../../includes/summary_helper.php");
 require_once("../../database/config.php");
 
 $start = date('Y-m-01');
 $end   = date('Y-m-t');
 
-$sales  = getSalesSummary($conn, $start, $end);
-$books  = getTopBooks($conn);
+
+$summaryHelper = new SummaryHelper($conn);
+$sales  = $summaryHelper->getMonthlyRevenueSummary();
+$books  = $summaryHelper->getTopBooksSummary();
 $users  = getUserRoleDistribution($conn);
 $logs   = getRecentLogs($conn);
 ?>
@@ -31,16 +33,22 @@ $logs   = getRecentLogs($conn);
     <table>
         <thead><tr><th>Date</th><th>Total Sales (KSh)</th><th>Transactions</th></tr></thead>
         <tbody>
+
         <?php foreach($sales as $s): ?>
-            <tr><td><?= $s['sale_date'] ?></td><td><?= number_format($s['total_sales'], 2) ?></td><td><?= $s['total_transactions'] ?></td></tr>
-        <?php endforeach; ?>
+       <tr>
+  <td><?= $s['month'] ?></td>
+  <td><?= number_format($s['total'], 2) ?></td>
+  <td>-</td> 
+</tr>
+    <?php endforeach; ?>
+
         </tbody>
     </table>
 
     <h2>Top Books</h2>
     <ul>
     <?php foreach($books as $b): ?>
-        <li><?= htmlspecialchars($b['title']) ?> — Sold: <?= $b['total_sold'] ?> (KSh <?= number_format($b['total_earned'],2) ?>)</li>
+<li><?= htmlspecialchars($b['title']) ?> — Sold: <?= $b['total_sold'] ?></li>
     <?php endforeach; ?>
     </ul>
 
