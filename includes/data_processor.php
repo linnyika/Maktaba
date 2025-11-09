@@ -114,6 +114,9 @@ public function getUserSpendingForChart($user_id) {
     return ['labels'=>$labels,'values'=>$values];
 }
 
+public function getConnection() {
+    return $this->conn;
+}
 
 
 
