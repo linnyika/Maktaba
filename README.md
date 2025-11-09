@@ -32,83 +32,69 @@ Maktaba is a web-based bookstore management system designed to handle day-to-day
 1. Clone the repository:
 ```bash
 git clone https://github.com/linnyika/Maktaba.git
+```
 
 2. Import the database using HeidiSQL or any MySQL client:
 ```sql
 CREATE DATABASE maktaba_db;
+```
 Import all provided tables and sample data.
 
-3. Configure the database connection in includes/config.php with your credentials.
+3. Configure the database connection in `includes/config.php` with your credentials.
 
 4. Run the project on your preferred PHP server (e.g., XAMPP/Apache).
 
 5. Access the system via:
+```
 http://localhost/Maktaba/
+```
 
+## Project Structure / Key Files
 
-### Project Structure / Key Files
+- **modules/admin/** – Administrative modules including reports, book management, and user management.
+- **modules/user/** – User-facing pages for browsing books and placing orders.
+- **includes/summary_helper.php** – Provides summarized data for reports.
+- **includes/data_processor.php** – Handles queries and calculations for system summaries.
+- **database/config.php** – Database connection setup.
+- **assets/css/** – Styles for the project.
 
---modules/admin/ – Administrative modules including reports, book management, and user management.
+## Usage
 
---modules/user/ – User-facing pages for browsing books and placing orders.
+- **Admin:** Manage books, users, view reports, and oversee system activities.
+- **Customer:** Browse books, place orders, and view order history.
 
---includes/summary_helper.php – Provides summarized data for reports.
+## Key Functional Modules
 
---includes/data_processor.php – Handles queries and calculations for system summaries.
+### Final Reports (`modules/admin/final_reports.php`)
+- Compiles monthly sales, top books, user roles, and recent logs.
+- Uses `summary_helper.php` for summarized queries.
 
---database/config.php – Database connection setup.
+### Book Management (`modules/admin/books.php`)
+- Add, edit, and remove books from inventory.
+- Update stock levels and pricing.
 
---assets/css/ – Styles for the project.
+### User Management (`modules/admin/users.php`)
+- Register new users and assign roles.
+- View all users and manage accounts.
 
+### Order Management (`modules/user/orders.php`)
+- Customers can place new orders.
+- Tracks order status and calculates total revenue.
 
-### Usage
+### Helpers (`includes/`)
+- `summary_helper.php` – Generates system-wide and user-specific summaries.
+- `data_processor.php` – Executes database queries and computations.
 
-**Admin: Manage books, users, view reports, and oversee system activities.
+### Assets (`assets/`)
+- CSS and JS files for front-end styling and interactivity.
 
-**Customer: Browse books, place orders, and view order history.
+## Contributions
+Developed as a group project by **Group E-11** for the BBIT program. Contributions include:
 
-### Key Functional Modules
+- Database design and setup  
+- Backend logic and query handling  
+- Front-end design and styling  
+- Report generation and summaries  
 
----Final Reports (modules/admin/final_reports.php)
-    #Compiles monthly sales, top books, user roles, and recent logs.
-    #Uses summary_helper.php for summarized queries.
-
----Book Management (modules/admin/books.php)
-   #Add, edit, and remove books from inventory.
-     #Updates stock levels and pricing.
-
----User Management (modules/admin/users.php)
-    #Register new users and assign roles.
-    #View all users and manage accounts.
-
----Order Management (modules/user/orders.php)
-    #Customers can place new orders.
-    #Tracks order status and calculates total revenue.
-
----Helpers (includes/)
-    #summary_helper.php – Generates system-wide and user-specific summaries.
-    #data_processor.php – Executes database queries and computations.
-
----Assets (assets/)
-    #CSS and JS files for front-end styling and interactivity.
-
-
-
-    ### Contributions
-
-Developed as a group project by Group E-11 for the BBIT program. Contributions include:
-
--Database design and setup
-
--Backend logic and query handling
-
--Front-end design and styling
-
--Report generation and summaries
-
-
-
-
-License
-
+## License
 This project is for academic purposes for the BBIT program and is not for commercial use.
