@@ -61,13 +61,13 @@ http://localhost/Maktaba/
 --assets/css/ – Styles for the project.
 
 
-###Usage
+### Usage
 
 **Admin: Manage books, users, view reports, and oversee system activities.
 
 **Customer: Browse books, place orders, and view order history.
 
-###Key Functional Modules
+### Key Functional Modules
 
 ---Final Reports (modules/admin/final_reports.php)
     #Compiles monthly sales, top books, user roles, and recent logs.
@@ -94,7 +94,7 @@ http://localhost/Maktaba/
 
 
 
-    ###Contributions
+    ### Contributions
 
 Developed as a group project by Group E-11 for the BBIT program. Contributions include:
 
