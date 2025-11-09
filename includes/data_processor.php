@@ -60,6 +60,7 @@ class DataProcessor {
 
     //  User-specific order summary
     public function getUserSummary($user_id) {
+        
         $sql = "
             SELECT 
                 COUNT(*) AS total_orders,
@@ -71,6 +72,51 @@ class DataProcessor {
         return $res ? $res->fetch_assoc() : ['total_orders'=>0,'total_spent'=>0];
     }
 
+
+public function getUserOrdersForChart($user_id) {
+    $sql = "
+        SELECT DATE(order_date) AS day, COUNT(*) AS orders
+        FROM orders
+        WHERE user_id = $user_id
+        GROUP BY day
+        ORDER BY day ASC
+    ";
+    $res = $this->conn->query($sql);
+    $labels = [];
+    $values = [];
+    if ($res) {
+        while ($row = $res->fetch_assoc()) {
+            $labels[] = $row['day'];
+            $values[] = (int)$row['orders'];
+        }
+    }
+    return ['labels'=>$labels,'values'=>$values];
+}
+
+public function getUserSpendingForChart($user_id) {
+    $sql = "
+        SELECT b.genre, COALESCE(SUM(oi.price * oi.quantity),0) AS total
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        JOIN books b ON oi.book_id = b.book_id
+        WHERE o.user_id = $user_id
+        GROUP BY b.genre
+    ";
+    $res = $this->conn->query($sql);
+    $labels = [];
+    $values = [];
+    if ($res) {
+        while ($row = $res->fetch_assoc()) {
+            $labels[] = $row['genre'];
+            $values[] = (float)$row['total'];
+        }
+    }
+    return ['labels'=>$labels,'values'=>$values];
+}
+
+
+
+
     //  Overall average rating (from approved reviews)
     public function getAverageRating() {
         $sql = "SELECT ROUND(AVG(rating),1) AS avg_rating 
@@ -81,13 +127,14 @@ class DataProcessor {
     }
 }
  
-//to test thhe connection
-echo "✅ File loaded successfully<br>";
-
-if (isset($conn)) {
-    echo "✅ Database connection exists<br>";
-} else {
-    echo "❌ No database connection<br>";
+// Only show test confirmation when accessing this file directly
+if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
+    echo "✅ File loaded successfully<br>";
+    if ($conn) {
+        echo "✅ Database connection exists<br>";
+    } else {
+        echo "❌ No database connection<br>";
+    }
 }
 
 ?>
