@@ -17,6 +17,12 @@
         <li class="nav-item"><a class="nav-link" href="manage_orders.php">Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="system_reports.php">Reports</a></li>
         <li class="nav-item"><a class="nav-link" href="payment_logs.php">Logs</a></li>
+        <li class="nav-item">
+ <li class="nav-item">
+  <a class="nav-link" href="book_performance.php">Book Performance</a>
+</li>
+
+
         <li class="nav-item"><a class="nav-link" href="moodle_sync.php">Moodle Sync</a></li>
         <li class="nav-item"><a class="nav-link" href="manage_reviews.php">Reviews</a></li>
         <li class="nav-item"><a class="nav-link" href="../../modules/auth/logout.php">Logout</a></li>
