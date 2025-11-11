@@ -90,9 +90,13 @@ $reportData = [
 
 <main class="container my-5 flex-grow-1">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-primary"></i>System Reports Overview</h3>
+        <h3 class="fw-bold text-primary">System Reports Overview</h3>
     </div>
 
+    <!-- ✅ Export Controls Section -->
+    <div class="mb-5">
+        <?php include __DIR__ . '/export_ui.php'; ?>
+    </div>
 
     <!-- Charts -->
     <section class="row g-3 mb-5">
@@ -207,5 +211,6 @@ $reportData = [
 window.reportData = <?= json_encode($reportData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 </script>
 <script src="/assets/js/admin_charts.js"></script>
+<script src="/assets/js/export.js"></script>
 </body>
 </html>

@@ -1,109 +1,174 @@
--- Insert default admin user
-INSERT INTO users (full_name, email, password_hash, user_role, is_verified) 
-VALUES ('Admin Maktaba', 'admin@maktaba.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1);
--- Password: password
-
--- Insert 6 publishers
-INSERT INTO publishers (name, address, contact_number, email) VALUES
-('Penguin Random House', '1745 Broadway, New York, NY 10019', '+1-212-782-9000', 'info@penguinrandomhouse.com'),
-('HarperCollins', '195 Broadway, New York, NY 10007', '+1-212-207-7000', 'contact@harpercollins.com'),
-('Macmillan Publishers', '120 Broadway, New York, NY 10271', '+1-646-307-5151', 'support@macmillan.com'),
-('Simon & Schuster', '1230 Avenue of the Americas, New York, NY 10020', '+1-212-698-7000', 'info@simonandschuster.com'),
-('Houghton Mifflin Harcourt', '125 High Street, Boston, MA 02110', '+1-617-351-5000', 'info@hmhco.com'),
-('Bloomsbury Publishing', '50 Bedford Square, London WC1B 3DP', '+44-20-7631-5600', 'contact@bloomsbury.com');
-
--- Insert 15 books with publication years from 1901 to 2023
-INSERT INTO books (title, author, publisher_id, price, stock_quantity, reserved_stock, genre, year_of_publication, description, book_cover, moodle_course_id, is_available) VALUES
-('The Call of the Wild', 'Jack London', 1, 9.99, 20, 2, 'Adventure', 1903, 'A story about a domesticated dog''s transformation to the wild.', 'call_wild.jpg', 'LIT201', 1),
-('The Great Gatsby', 'F. Scott Fitzgerald', 1, 12.99, 25, 3, 'Classic', 1925, 'A story of wealth, love, and the American Dream in the Jazz Age.', 'great_gatsby.jpg', 'LIT101', 1),
-('To Kill a Mockingbird', 'Harper Lee', 2, 14.50, 18, 2, 'Fiction', 1960, 'A gripping story of racial injustice and childhood innocence.', 'mockingbird.jpg', 'LIT102', 1),
-('1984', 'George Orwell', 3, 11.75, 30, 5, 'Dystopian', 1949, 'A dystopian novel about totalitarian control and surveillance.', '1984.jpg', 'POL101', 1),
-('Animal Farm', 'George Orwell', 3, 10.25, 22, 1, 'Political Satire', 1945, 'A satirical allegory about Soviet totalitarianism.', 'animal_farm.jpg', 'POL102', 1),
-('The Hobbit', 'J.R.R. Tolkien', 4, 16.25, 15, 4, 'Fantasy', 1937, 'A fantasy novel about the adventures of hobbit Bilbo Baggins.', 'hobbit.jpg', 'FAN101', 1),
-('Harry Potter and the Sorcerer''s Stone', 'J.K. Rowling', 6, 18.99, 35, 8, 'Fantasy', 1997, 'The first novel in the Harry Potter series about a young wizard.', 'harry_potter1.jpg', 'FAN102', 1),
-('The Catcher in the Rye', 'J.D. Salinger', 5, 13.45, 12, 0, 'Fiction', 1951, 'A novel about teenage rebellion and alienation in New York.', 'catcher_rye.jpg', 'LIT104', 1),
-('The Alchemist', 'Paulo Coelho', 2, 9.99, 28, 3, 'Adventure', 1988, 'A philosophical book about following your dreams.', 'alchemist.jpg', 'PHI101', 1),
-('Brave New World', 'Aldous Huxley', 3, 12.80, 20, 2, 'Dystopian', 1932, 'A dystopian novel about a society controlled by technology.', 'brave_new_world.jpg', 'SOC101', 1),
-('The Lord of the Rings: Fellowship', 'J.R.R. Tolkien', 4, 22.50, 10, 6, 'Fantasy', 1954, 'The first volume of the epic fantasy trilogy.', 'lotr_fellowship.jpg', 'FAN103', 1),
-('The Da Vinci Code', 'Dan Brown', 1, 15.99, 25, 4, 'Mystery', 2003, 'A mystery thriller about a conspiracy within the Catholic Church.', 'davinci_code.jpg', 'THR101', 1),
-('The Hunger Games', 'Suzanne Collins', 2, 14.99, 30, 7, 'Dystopian', 2008, 'A dystopian novel about a televised fight to the death.', 'hunger_games.jpg', 'DYS101', 1),
-('The Girl on the Train', 'Paula Hawkins', 5, 13.25, 18, 3, 'Thriller', 2015, 'A psychological thriller about a woman who becomes involved in a mystery.', 'girl_train.jpg', 'THR102', 1),
-('Project Hail Mary', 'Andy Weir', 1, 16.99, 22, 5, 'Science Fiction', 2021, 'A sci-fi novel about an astronaut who wakes up with amnesia.', 'hail_mary.jpg', 'SCI101', 1);
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-NEW SAMPLE DATA 
-
-INSERT INTO cart (user_id, book_id, quantity, added_at) VALUES
-(1, 3, 2, NOW()),   -- Admin testing book 'To Kill a Mockingbird'
-(1, 7, 1, NOW()),   -- 'Harry Potter and the Sorcerer’s Stone'
-(1, 10, 1, NOW()),  -- 'Brave New World'
-(1, 12, 1, NOW());  -- 'The Da Vinci Code'
-
-2. orders
-INSERT INTO orders (user_id, shipping_address, total_amount, order_status, payment_status, mpesa_receipt)
+-- Admin + Sample Users
+INSERT INTO users (full_name, email, password_hash, user_role, is_verified)
 VALUES
-(1, '123 Library Lane, Nairobi, Kenya', 35.98, 'Delivered', 'Paid', 'MPESA123ABC'),
-(1, '456 River Road, Nakuru, Kenya', 22.50, 'Shipped', 'Paid', 'MPESA456DEF'),
-(1, '789 Hilltop Avenue, Mombasa, Kenya', 18.99, 'Pending', 'Pending', NULL),
-(1, '101 Garden Estate, Kisumu, Kenya', 27.79, 'Delivered', 'Paid', 'MPESA789GHI');
+('Admin Maktaba', 'admin@maktaba.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1),
+('Alice Kimani', 'alice@example.com', '$2y$10$abcd1234generatedhash...', 'customer', 1),
+('Brian Otieno', 'brian@example.com', '$2y$10$efgh5678generatedhash...', 'customer', 1),
+('Cynthia Wanjiru', 'cynthia@example.com', '$2y$10$ijkl9012generatedhash...', 'customer', 1),
+('David Njoroge', 'david@example.com', '$2y$10$mnop3456generatedhash...', 'customer', 1),
+('Eva Mwangi', 'eva@example.com', '$2y$10$qrst7890generatedhash...', 'customer', 1);
 
-3. order_items
-INSERT INTO order_items (order_id, book_id, quantity, price) VALUES
-(1, 3, 1, 14.50),   -- To Kill a Mockingbird
-(1, 10, 1, 12.80),  -- Brave New World
-(2, 11, 1, 22.50),  -- The Fellowship
-(3, 7, 1, 18.99),   -- Harry Potter
-(4, 5, 1, 10.25),   -- Animal Farm
-(4, 9, 1, 9.99);    -- The Alchemist
-
-4. payments
-INSERT INTO payments (order_id, payment_method, payment_status, amount, mpesa_phone, mpesa_transaction_id, mpesa_receipt_number, result_code, result_desc)
+-- Publishers
+INSERT INTO publishers (name, address, contact_number, email)
 VALUES
-(1, 'Mpesa', 'Paid', 35.98, '+254712345678', 'TXN001', 'MPESA123ABC', 0, 'Completed successfully'),
-(2, 'Mpesa', 'Paid', 22.50, '+254701112233', 'TXN002', 'MPESA456DEF', 0, 'Completed successfully'),
-(3, 'Mpesa', 'Pending', 18.99, '+254722334455', 'TXN003', NULL, 1, 'Awaiting confirmation'),
-(4, 'Mpesa', 'Paid', 20.24, '+254733445566', 'TXN004', 'MPESA789GHI', 0, 'Completed successfully');
+('Nairobi Books Ltd','Nairobi','0712345678','info@nairobi-books.com'),
+('Maktaba Press','Mombasa','0722456789','contact@maktabapress.com'),
+('Classic Reads','Kisumu','0733567890','hello@classicreads.com'),
+('Sunset Publishing','Eldoret','0744678901','sales@sunsetpub.com'),
+('Knowledge House','Nakuru','0755789012','admin@knowledgehouse.com'),
+('East African Prints','Nyeri','0766890123','eastafrica@prints.com'),
+('Bookwise Publishers','Kakamega','0777901234','info@bookwise.com'),
+('Learning Tree','Thika','0788012345','contact@learningtree.com'),
+('Jambo Editions','Machakos','0799123456','support@jamboed.com'),
+('Writers Hub','Naivasha','0700234567','info@writershub.com');
 
-5. shipping
+-- Books
+INSERT INTO books (title, author, publisher_id, price, stock_quantity, genre, year_of_publication, description)
+VALUES
+('The Silent River', 'Grace Ochieng', 1, 950.00, 15, 'Fiction', 2021, 'A deep dive into family and tradition.'),
+('Echoes of the Hills', 'John Mwangi', 2, 750.00, 10, 'Drama', 2022, 'Stories inspired by rural Kenya.'),
+('Digital Africa', 'Lucy Nduta', 3, 1200.00, 25, 'Technology', 2023, 'Exploring Africa’s tech revolution.'),
+('Cooking the Kenyan Way', 'Chef Maina', 4, 650.00, 8, 'Cooking', 2020, 'Delicious recipes from local cuisines.'),
+('Wildlife Adventures', 'Peter Otieno', 5, 800.00, 12, 'Adventure', 2019, 'Safari tales and wildlife photography.'),
+('Modern JavaScript', 'Ann Karanja', 6, 1300.00, 20, 'Education', 2023, 'Learn JavaScript through Kenyan examples.'),
+('Secrets of Success', 'Brian Mutua', 7, 500.00, 18, 'Motivation', 2018, 'Self-improvement for young entrepreneurs.'),
+('Mountains Beyond', 'Sarah Wairimu', 8, 900.00, 14, 'Travel', 2021, 'A guide to East African mountains.'),
+('The Startup Dream', 'Kevin Ndungu', 9, 1100.00, 11, 'Business', 2022, 'Building startups in Africa.'),
+('Herbal Remedies', 'Dr. Achieng', 10, 700.00, 9, 'Health', 2020, 'Traditional herbs and healing practices.');
+
+-- Orders
+INSERT INTO orders (user_id, shipping_address, total_amount, order_status, payment_status)
+VALUES
+(2, 'Nairobi, Kenya', 1750.00, 'Delivered', 'Paid'),
+(3, 'Kisumu, Kenya', 1300.00, 'Pending', 'Pending'),
+(4, 'Eldoret, Kenya', 950.00, 'Delivered', 'Paid'),
+(5, 'Mombasa, Kenya', 2200.00, 'Shipped', 'Paid'),
+(6, 'Nakuru, Kenya', 650.00, 'Cancelled', 'Refunded'),
+(2, 'Thika, Kenya', 1500.00, 'Delivered', 'Paid'),
+(3, 'Naivasha, Kenya', 900.00, 'Shipped', 'Paid'),
+(4, 'Nyeri, Kenya', 1300.00, 'Pending', 'Pending'),
+(5, 'Machakos, Kenya', 1100.00, 'Delivered', 'Paid'),
+(6, 'Nairobi, Kenya', 750.00, 'Delivered', 'Paid');
+
+-- Payments
+INSERT INTO payments (order_id, payment_method, payment_status, amount, mpesa_phone, mpesa_transaction_id)
+VALUES
+(1, 'Mpesa', 'Paid', 1750.00, '0712345678', 'TX123456'),
+(2, 'Mpesa', 'Pending', 1300.00, '0722456789', 'TX234567'),
+(3, 'Mpesa', 'Paid', 950.00, '0733567890', 'TX345678'),
+(4, 'Mpesa', 'Paid', 2200.00, '0744678901', 'TX456789'),
+(5, 'Mpesa', 'Refunded', 650.00, '0755789012', 'TX567890'),
+(6, 'Mpesa', 'Paid', 1500.00, '0766890123', 'TX678901'),
+(7, 'Mpesa', 'Paid', 900.00, '0777901234', 'TX789012'),
+(8, 'Mpesa', 'Pending', 1300.00, '0788012345', 'TX890123'),
+(9, 'Mpesa', 'Paid', 1100.00, '0799123456', 'TX901234'),
+(10, 'Mpesa', 'Paid', 750.00, '0700234567', 'TX012345');
+
+-- Reviews
+INSERT INTO reviews (user_id, book_id, rating, comment, is_approved)
+VALUES
+(2,1,5,'Excellent story!',1),
+(3,2,4,'Nice rural setting',1),
+(4,3,5,'Very informative!',1),
+(5,4,3,'Good recipes',1),
+(6,5,4,'Beautiful photography',1),
+(2,6,5,'Very helpful for coding',1),
+(3,7,4,'Great motivation tips',1),
+(4,8,4,'Good travel guide',1),
+(5,9,5,'Perfect business book',1),
+(6,10,4,'Useful natural remedies',1);
+
+-- 10 sample reservations
+INSERT INTO reservations (user_id, book_id, reservation_date, pickup_date, return_date, payment_status, notes, status)
+VALUES
+(2, 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 8 DAY), 'Paid', 'First reservation', 'Approved'),
+(3, 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 9 DAY), 'Unpaid', 'Urgent', 'Pending'),
+(4, 3, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 7 DAY), 'Paid', '', 'Approved'),
+(5, 4, NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 10 DAY), 'Paid', 'Reserved for project', 'Approved'),
+(6, 5, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 9 DAY), 'Unpaid', '', 'Pending'),
+(2, 6, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 7 DAY), 'Paid', 'For research', 'Approved'),
+(3, 1, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 8 DAY), 'Paid', '', 'Approved'),
+(4, 2, NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 9 DAY), 'Unpaid', 'Check availability', 'Pending'),
+(5, 3, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 7 DAY), 'Paid', '', 'Approved'),
+(6, 4, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 8 DAY), 'Unpaid', 'Reserved for class', 'Pending');
+
+-- 10 sample shipping records
 INSERT INTO shipping (order_id, carrier, tracking_number, shipped_date, estimated_delivery, actual_delivery, status)
 VALUES
-(1, 'DHL', 'DHLKEN12345', '2025-11-01', '2025-11-03', '2025-11-03', 'Delivered'),
-(2, 'Posta Kenya', 'PKEN56789', '2025-11-02', '2025-11-05', NULL, 'Shipped'),
-(3, NULL, NULL, NULL, NULL, NULL, 'Pending'),
-(4, 'Fargo Courier', 'FARGO99887', '2025-11-03', '2025-11-06', '2025-11-05', 'Delivered');
+(1, 'DHL', 'DHL001', NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), 'Delivered'),
+(2, 'FedEx', 'FDX002', NOW(), DATE_ADD(NOW(), INTERVAL 5 DAY), NULL, 'Shipped'),
+(3, 'UPS', 'UPS003', NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), NULL, 'Pending'),
+(4, 'DHL', 'DHL004', NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), 'Delivered'),
+(5, 'FedEx', 'FDX005', NOW(), DATE_ADD(NOW(), INTERVAL 6 DAY), NULL, 'Shipped'),
+(6, 'UPS', 'UPS006', NOW(), DATE_ADD(NOW(), INTERVAL 5 DAY), NULL, 'Pending'),
+(7, 'DHL', 'DHL007', NOW(), DATE_ADD(NOW(), INTERVAL 3 DAY), NULL, 'Shipped'),
+(8, 'FedEx', 'FDX008', NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), NULL, 'Pending'),
+(9, 'UPS', 'UPS009', NOW(), DATE_ADD(NOW(), INTERVAL 6 DAY), NULL, 'Pending'),
+(10, 'DHL', 'DHL010', NOW(), DATE_ADD(NOW(), INTERVAL 5 DAY), NULL, 'Shipped');
 
-6. reservations
-INSERT INTO reservations (user_id, book_id, pickup_date, return_date, status, payment_status, notes)
+-- 10 sample system logs with module
+INSERT INTO logs (user_id, action, module, description, timestamp)
 VALUES
-(1, 2, '2025-11-05', '2025-11-10', 'Approved', 'Paid', 'Reserved for literature workshop'),
-(1, 4, '2025-11-06', '2025-11-12', 'Pending', 'Unpaid', 'Awaiting approval'),
-(1, 6, '2025-11-07', '2025-11-13', 'Cancelled', 'Unpaid', 'User cancelled reservation'),
-(1, 13, '2025-11-08', '2025-11-15', 'Approved', 'Paid', 'For book club review');
+(2, 'LOGIN', 'Auth', 'User logged in', NOW()),
+(3, 'RESERVE_BOOK', 'Reservations', 'Reserved book ID 2', NOW()),
+(4, 'PURCHASE', 'Orders', 'Completed order ID 3', NOW()),
+(5, 'UPDATE_PROFILE', 'Users', 'Updated phone number', NOW()),
+(6, 'CANCEL_ORDER', 'Orders', 'Cancelled order ID 6', NOW()),
+(2, 'LOGOUT', 'Auth', 'User logged out', NOW()),
+(3, 'LOGIN', 'Auth', 'User logged in', NOW()),
+(4, 'ADD_TO_CART', 'Cart', 'Added book ID 3 to cart', NOW()),
+(5, 'RESERVE_BOOK', 'Reservations', 'Reserved book ID 4', NOW()),
+(6, 'PURCHASE', 'Orders', 'Completed order ID 5', NOW());
 
-7. moodle_sync
-INSERT INTO moodle_sync (book_id, moodle_course_id, sync_status, notes)
+-- 10 sample cart entries
+INSERT INTO cart (user_id, book_id, quantity, added_at)
 VALUES
-(1, 'LIT201', 'Success', 'Book linked successfully with Moodle course LIT201'),
-(3, 'LIT102', 'Success', 'Synchronized with Moodle course LIT102'),
-(5, 'POL102', 'Pending', 'Awaiting Moodle API response'),
-(7, 'FAN102', 'Success', 'Successfully linked with Fantasy module'),
-(10, 'SOC101', 'Failed', 'Moodle API timeout – retry scheduled');
+(2, 1, 1, NOW()),
+(3, 2, 2, NOW()),
+(4, 3, 1, NOW()),
+(5, 4, 3, NOW()),
+(6, 5, 1, NOW()),
+(2, 6, 2, NOW()),
+(3, 1, 1, NOW()),
+(4, 2, 1, NOW()),
+(5, 3, 1, NOW()),
+(6, 4, 2, NOW());
 
-8. logs
-INSERT INTO logs (user_id, action, module, description)
+INSERT INTO system_logs (user_id, action, description, ip_address, log_date)
 VALUES
-(1, 'LOGIN', 'Auth', 'Admin logged in successfully'),
-(1, 'VIEW', 'Books', 'Viewed details of book "1984"'),
-(1, 'UPDATE', 'Orders', 'Updated order #2 status to Shipped'),
-(1, 'DELETE', 'Reservations', 'Cancelled reservation #3'),
-(1, 'EXPORT', 'Reports', 'Generated monthly sales report');
+(2, 'LOGIN', 'User logged in', '192.168.1.2', NOW()),
+(3, 'LOGOUT', 'User logged out', '192.168.1.3', NOW()),
+(4, 'UPDATE_PROFILE', 'Changed email address', '192.168.1.4', NOW()),
+(5, 'PLACE_ORDER', 'Placed order ID 1', '192.168.1.5', NOW()),
+(6, 'CANCEL_ORDER', 'Cancelled order ID 2', '192.168.1.6', NOW()),
+(2, 'ADD_TO_CART', 'Added book ID 3 to cart', '192.168.1.2', NOW()),
+(3, 'RESERVE_BOOK', 'Reserved book ID 4', '192.168.1.3', NOW()),
+(4, 'PAYMENT', 'Paid for order ID 3', '192.168.1.4', NOW()),
+(5, 'REVIEW_BOOK', 'Reviewed book ID 5', '192.168.1.5', NOW()),
+(6, 'LOGIN', 'User logged in', '192.168.1.6', NOW());
 
-9. system_logs
-INSERT INTO system_logs (user_id, action, description, ip_address)
+INSERT INTO moodle_sync (book_id, moodle_course_id, sync_date, sync_status, notes)
 VALUES
-(1, 'CREATE_ORDER', 'Created new order #3 for user 1', '192.168.0.2'),
-(1, 'UPDATE_BOOK', 'Adjusted stock levels for book_id 7', '192.168.0.2'),
-(1, 'PROCESS_PAYMENT', 'Processed M-Pesa payment TXN004 successfully', '192.168.0.2'),
-(1, 'LOGIN', 'Admin logged in at 2025-11-07 09:30', '192.168.0.2'),
-(1, 'GENERATE_REPORT', 'Generated analytics dashboard summary', '192.168.0.2');
+(1, 'MATH101', NOW(), 'Success', 'Synced successfully'),
+(2, 'ENG202', NOW(), 'Success', 'Synced successfully'),
+(3, 'SCI303', NOW(), 'Failed', 'Course not found'),
+(4, 'HIS404', NOW(), 'Pending', 'Awaiting confirmation'),
+(5, 'BIO505', NOW(), 'Success', 'Synced successfully'),
+(6, 'CHEM606', NOW(), 'Success', 'Synced successfully'),
+(7, 'PHY707', NOW(), 'Failed', 'Error in data format'),
+(8, 'CS808', NOW(), 'Pending', 'Waiting for Moodle approval'),
+(9, 'ART909', NOW(), 'Success', 'Synced successfully'),
+(10, 'MUS1010', NOW(), 'Success', 'Synced successfully');
+
+INSERT INTO order_items (order_id, book_id, quantity, price)
+VALUES
+(1, 1, 2, 1200.00),
+(1, 2, 1, 500.00),
+(2, 3, 1, 750.00),
+(2, 4, 3, 2100.00),
+(3, 5, 2, 1600.00),
+(3, 6, 1, 800.00),
+(4, 7, 4, 3200.00),
+(4, 8, 1, 600.00),
+(5, 9, 2, 1500.00),
+(5, 10, 1, 700.00);
