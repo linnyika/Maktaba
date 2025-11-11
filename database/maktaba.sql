@@ -166,6 +166,16 @@ CREATE TABLE IF NOT EXISTS reservations (
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
+
+CREATE TABLE activity_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(255) NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(50),
+    details TEXT
+);
+
 ALTER TABLE users 
 ADD COLUMN avatar VARCHAR(255) DEFAULT NULL;
 
