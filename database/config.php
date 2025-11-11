@@ -1,9 +1,9 @@
 <?php
 // Database connection configuration
 $host = 'localhost';  
-$port = 3306;          // adjust MySQL port
+$port = 3307;          // adjust MySQL port
 $user = 'root';
-$pass = 'maria';     // adjust if your MySQL password differs
+$pass = 'mariadb';     // adjust if your MySQL password differs
 $dbname = 'maktaba';   // change if your actual database name differs
 
 // Create connection

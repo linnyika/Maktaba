@@ -16,6 +16,7 @@ CREATE TABLE users (
     is_verified TINYINT(1) DEFAULT 0,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL
+    COLUMN avatar VARCHAR(255) DEFAULT NULL;
 );
 
 -- Publishers tableI
@@ -114,7 +115,8 @@ CREATE TABLE reviews (
     is_approved TINYINT(1) DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(book_id)
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    ADD COLUMN comment TEXT
 );
 -- Moodle integration table
 CREATE TABLE moodle_sync (
@@ -147,33 +149,34 @@ CREATE TABLE IF NOT EXISTS reservations (
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pickup_date DATE NULL,
     return_date DATE NULL,
-    status ENUM('Pending','Confirmed','Cancelled','Completed') DEFAULT 'Pending',
+
     payment_status ENUM('Unpaid','Paid') DEFAULT 'Unpaid',
     notes TEXT NULL,
 
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
+    COLUMN status ENUM('Pending','Approved','Cancelled') DEFAULT 'Pending'
 );
 
- ALTER TABLE reviews ADD COLUMN comment TEXT;
  
  CREATE TABLE logs (
   log_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT,
+  user_id INT NULL,
   action VARCHAR(100),
   module VARCHAR(100),
   description TEXT,
   timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
-ALTER TABLE users 
-ADD COLUMN avatar VARCHAR(255) DEFAULT NULL;
 
-ALTER TABLE reviews 
-ADD COLUMN comment TEXT;
-
-ALTER TABLE logs 
-MODIFY COLUMN timestamp DATETIME DEFAULT CURRENT_TIMESTAMP;
-
-Also add this ALTER TABLE logs 
-MODIFY COLUMN user_id INT NULL;
+ CREATE TABLE IF NOT EXISTS cart (
+    cart_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
