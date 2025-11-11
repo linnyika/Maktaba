@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* analytics.css – Member 5 Visualization Styling */
 
 .analytics-card {
@@ -42,4 +43,15 @@ body {
 
 h2.fw-bold {
   font-size: 1.8rem;
+=======
+body {
+  background-color: #f8fafc;
+}
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table thead th {
+  background-color: #c1f0e3;
+>>>>>>> d80a2c3309e28cccfa01fd98bf7984d1d2b18d3d
 }
