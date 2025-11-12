@@ -1,4 +1,19 @@
 {
+    "name": "nyika/maktaba",
+    "description": "Aweb application for managing digital book records",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nyika\\Maktaba\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Linda Nyika Mwende",
+            "email": "linda.nyika@strathmore.edu"
+        }
+    ],
+    "minimum-stability": "stable",
     "require": {
         "phpoffice/phpspreadsheet": "^5.2"
     }
