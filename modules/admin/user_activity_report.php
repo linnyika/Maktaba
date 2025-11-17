@@ -1,24 +1,24 @@
 <?php
-ob_start(); // Start output buffering to prevent TCPDF errors
+ob_start();
 
 require_once("../../database/config.php");
 require_once("../../includes/session_check.php");
 require_once("../../includes/audit_helper.php");
-require_once("../../includes/vendor/tecnickcom/tcpdf/tcpdf.php"); // Correct path to TCPDF
+require_once("../../includes/vendor/tecnickcom/tcpdf/tcpdf.php");
 
-// Admin guard
+// Only allow admin access
 if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
     header('Location: /index.php');
     exit;
 }
 
-// Ensure role column exists
+// Ensure users table has role column
 $conn->query("ALTER TABLE users ADD COLUMN IF NOT EXISTS role ENUM('user','admin') NOT NULL DEFAULT 'user'");
 
-// Log page view
+// Log admin activity
 logActivity($conn, $_SESSION['user_id'], "Viewed User Activity & Audit Logs");
 
-// Fetch logs
+// Fetch user activity logs
 $activity_logs = $conn->query("
     SELECT a.user_id, a.action, u.role, a.timestamp
     FROM activity_logs a
@@ -26,14 +26,15 @@ $activity_logs = $conn->query("
     ORDER BY a.timestamp DESC
 ");
 
+// For audit logs, use the same table (or if you have a separate audit_trail table, adjust the table name)
 $audit_logs = $conn->query("
-    SELECT at.id, at.user_id, at.activity, u.role, at.log_time
-    FROM audit_trail at
+    SELECT at.log_id, at.user_id, at.action, u.role, at.timestamp
+    FROM activity_logs at
     INNER JOIN users u ON at.user_id = u.user_id
-    ORDER BY at.log_time DESC
+    ORDER BY at.timestamp DESC
 ");
 
-// --- PDF Generation ---
+// PDF generation
 if (isset($_POST['generate_pdf'])) {
     $pdf = new TCPDF();
     $pdf->SetCreator(PDF_CREATOR);
@@ -52,7 +53,7 @@ if (isset($_POST['generate_pdf'])) {
         <tr><th>User ID</th><th>Action</th><th>Role</th><th>Timestamp</th></tr>
     </thead><tbody>';
     if ($activity_logs && $activity_logs->num_rows > 0) {
-        $activity_logs->data_seek(0); // reset pointer
+        $activity_logs->data_seek(0);
         while($log = $activity_logs->fetch_assoc()) {
             $html .= '<tr>
             <td>'.$log['user_id'].'</td>
@@ -61,33 +62,38 @@ if (isset($_POST['generate_pdf'])) {
             <td>'.$log['timestamp'].'</td>
             </tr>';
         }
-    } else { $html .= '<tr><td colspan="4">No user activity logs</td></tr>'; }
+    } else { 
+        $html .= '<tr><td colspan="4">No user activity logs</td></tr>'; 
+    }
     $html .= '</tbody></table>';
     $pdf->writeHTML($html, true, false, true, false, '');
 
-    // Audit Trail Table
     $pdf->Ln(5);
+
+    // Audit Logs Table
     $html2 = '<table border="1" cellpadding="4">
     <thead>
-        <tr><th>ID</th><th>User ID</th><th>Activity</th><th>Role</th><th>Log Time</th></tr>
+        <tr><th>ID</th><th>User ID</th><th>Action</th><th>Role</th><th>Log Time</th></tr>
     </thead><tbody>';
     if ($audit_logs && $audit_logs->num_rows > 0) {
-        $audit_logs->data_seek(0); // reset pointer
+        $audit_logs->data_seek(0);
         while($audit = $audit_logs->fetch_assoc()) {
             $html2 .= '<tr>
-            <td>'.$audit['id'].'</td>
+            <td>'.$audit['log_id'].'</td>
             <td>'.$audit['user_id'].'</td>
-            <td>'.$audit['activity'].'</td>
+            <td>'.$audit['action'].'</td>
             <td>'.$audit['role'].'</td>
-            <td>'.$audit['log_time'].'</td>
+            <td>'.$audit['timestamp'].'</td>
             </tr>';
         }
-    } else { $html2 .= '<tr><td colspan="5">No audit logs</td></tr>'; }
+    } else { 
+        $html2 .= '<tr><td colspan="5">No audit logs</td></tr>'; 
+    }
     $html2 .= '</tbody></table>';
     $pdf->writeHTML($html2, true, false, true, false, '');
 
     $pdf->Output('User_Activity_'.date('Ymd_His').'.pdf', 'D');
-    exit; // stop further output
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -172,7 +178,7 @@ thead { background-color: #3ac47d; color: #fff; }
               <tr>
                 <th>ID</th>
                 <th>User ID</th>
-                <th>Activity</th>
+                <th>Action</th>
                 <th>Role</th>
                 <th>Log Time</th>
               </tr>
@@ -181,11 +187,11 @@ thead { background-color: #3ac47d; color: #fff; }
             <?php if ($audit_logs && $audit_logs->num_rows > 0): ?>
               <?php $audit_logs->data_seek(0); while($audit = $audit_logs->fetch_assoc()): ?>
                 <tr>
-                  <td><?= htmlspecialchars($audit['id']) ?></td>
+                  <td><?= htmlspecialchars($audit['log_id']) ?></td>
                   <td><?= htmlspecialchars($audit['user_id']) ?></td>
-                  <td><?= htmlspecialchars($audit['activity']) ?></td>
+                  <td><?= htmlspecialchars($audit['action']) ?></td>
                   <td><?= htmlspecialchars($audit['role']) ?></td>
-                  <td><?= htmlspecialchars($audit['log_time']) ?></td>
+                  <td><?= htmlspecialchars($audit['timestamp']) ?></td>
                 </tr>
               <?php endwhile; ?>
             <?php else: ?>

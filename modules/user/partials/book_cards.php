@@ -3,11 +3,26 @@
         <?php while ($book = $result->fetch_assoc()): ?>
             <div class="col-md-4 col-lg-3">
                 <div class="card h-100 shadow-sm">
-                    <img src="<?php echo !empty($book['book_cover']) 
-                        ? '../../assets/img/' . htmlspecialchars($book['book_cover']) 
-                        : '../../assets/img/shout.jpg'; ?>" 
-                        class="card-img-top" 
-                        alt="<?php echo htmlspecialchars($book['title']); ?>">
+                    <?php
+                    // Base path for your subdirectory setup (/Maktaba/)
+                    $basePath = '/Maktaba';
+                    
+                    // Determine the image path (absolute, with subdirectory)
+                    $imagePath = !empty($book['book_cover']) 
+                        ? $basePath . '/Assets/img/' . htmlspecialchars($book['book_cover']) 
+                        : $basePath . '/Assets/img/shout.jpg';
+                    
+                    // Debug: Check if file exists and log issues
+                    $fullServerPath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+                    if (!file_exists($fullServerPath)) {
+                        error_log("Image not found: $fullServerPath (Book Cover: " . ($book['book_cover'] ?? 'N/A') . ")");
+                        $imagePath = $basePath . '/Assets/img/shout.jpg';  // Fallback
+                    }
+                    ?>
+                    <img src="<?php echo $imagePath; ?>" 
+                         class="card-img-top" 
+                         alt="<?php echo htmlspecialchars($book['title']); ?>" 
+                         onerror="this.src='<?php echo $basePath; ?>/Assets/img/shout.jpg'; this.alt='Image not available';">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title text-success"><?php echo htmlspecialchars($book['title']); ?></h5>
                         <p class="card-text mb-1 text-muted">by <?php echo htmlspecialchars($book['author']); ?></p>

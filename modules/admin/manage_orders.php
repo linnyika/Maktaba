@@ -37,10 +37,10 @@ $result = $conn->query($query);
       <h3 class="fw-bold text-primary">Manage Orders</h3>
     </div>
 
-    <!-- ✅ Success message -->
+    <!--  Success message -->
     <?php if (isset($_GET['success'])): ?>
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        ✅ Order status updated successfully.
+        Order status updated successfully.
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     <?php endif; ?>

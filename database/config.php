@@ -1,10 +1,10 @@
 <?php
 // Database connection configuration
 $host = 'localhost';  
-$port = 3307;          // adjust MySQL port
+$port = 3306;          
 $user = 'root';
-$pass = 'mariadb';     // adjust if your MySQL password differs
-$dbname = 'maktaba';   // change if your actual database name differs
+$pass = 'maria';     
+$dbname = 'maktaba';  
 
 // Create connection
 $conn = new mysqli($host, $user, $pass, $dbname, $port);
@@ -13,3 +13,4 @@ $conn = new mysqli($host, $user, $pass, $dbname, $port);
 if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
+?>

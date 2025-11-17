@@ -1,148 +1,119 @@
 <?php
-<<<<<<< HEAD
 // includes/pdf_generator.php
-// Wrapper around TCPDF for ExportHelper
+// Simple PDF Generator for Maktaba System
 
-require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoload
-
-use TCPDF;
+// Check if TCPDF is available, otherwise use simple HTML fallback
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
 
 if (!function_exists('generatePDF')) {
     /**
      * Generate and stream a PDF from HTML
-     * @param string $html The HTML content
-     * @param string $filename The filename to send to browser
-     * @return void|string If returns string, path to temp file
      */
-    function generatePDF(string $html, string $filename)
-    {
+    function generatePDF($html, $filename) {
         try {
-            $pdf = new TCPDF();
-            $pdf->SetCreator('Maktaba Admin');
-            $pdf->SetAuthor('Maktaba');
-            $pdf->SetTitle($filename);
-            $pdf->SetMargins(10, 10, 10);
-            $pdf->AddPage();
-            $pdf->writeHTML($html, true, false, true, false, '');
-            
-            // Option 1: Stream directly
-            $pdf->Output($filename, 'D'); // 'D' = force download
-            return true;
-
-            // Option 2: Save to temp file instead of streaming
-            // $tmpPath = sys_get_temp_dir() . '/' . $filename;
-            // $pdf->Output($tmpPath, 'F');
-            // return $tmpPath;
-
+            // Try to use TCPDF if available
+            if (class_exists('TCPDF')) {
+                $pdf = new TCPDF();
+                $pdf->SetCreator('Maktaba Admin');
+                $pdf->SetAuthor('Maktaba');
+                $pdf->SetTitle($filename);
+                $pdf->SetMargins(10, 10, 10);
+                $pdf->AddPage();
+                $pdf->writeHTML($html, true, false, true, false, '');
+                $pdf->Output($filename, 'D');
+                return true;
+            } else {
+                // Fallback: output as HTML with PDF headers
+                header('Content-Type: application/pdf');
+                header('Content-Disposition: attachment; filename="' . $filename . '"');
+                echo $html;
+                return true;
+            }
         } catch (Exception $e) {
-            error_log("generatePDF error: " . $e->getMessage());
-            throw new Exception("PDF generation failed: " . $e->getMessage());
+            error_log("PDF generation error: " . $e->getMessage());
+            return false;
         }
     }
 }
-=======
-require_once("../../database/config.php");
-require_once("../../includes/session_check.php");
-require_once("../../includes/tcpdf_min/tcpdf.php"); // Make sure TCPDF is in this path
 
-// --- Admin guard ---
-if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
-    header('Location: /index.php');
+/**
+ * Simple PDF generation without TCPDF dependency
+ */
+function generateSimplePDF($headers, $data, $title, $filename) {
+    $html = generatePDFHTML($headers, $data, $title);
+    
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: no-cache, must-revalidate');
+    
+    echo $html;
     exit;
 }
 
-// --- Fetch activity logs ---
-$activity_logs = $conn->query("
-    SELECT a.user_id, a.action, u.role, a.timestamp
-    FROM activity_logs a
-    INNER JOIN users u ON a.user_id = u.user_id
-    ORDER BY a.timestamp DESC
-");
-
-// --- Fetch audit logs ---
-$audit_logs = $conn->query("
-    SELECT at.id, at.user_id, at.activity, u.role, at.log_time
-    FROM audit_trail at
-    INNER JOIN users u ON at.user_id = u.user_id
-    ORDER BY at.log_time DESC
-");
-
-// --- Create PDF ---
-$pdf = new TCPDF();
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Maktaba Admin');
-$pdf->SetTitle('User Activity & Audit Logs');
-$pdf->AddPage();
-
-// Title
-$pdf->SetFont('helvetica', 'B', 16);
-$pdf->Cell(0, 10, 'User Activity & Audit Logs', 0, 1, 'C');
-$pdf->Ln(5);
-
-// User Activity Table
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 8, 'User Activity', 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-
-$html = '<table border="1" cellpadding="4">
-<thead>
-<tr>
-<th>User ID</th>
-<th>Action</th>
-<th>Role</th>
-<th>Timestamp</th>
-</tr>
-</thead>
-<tbody>';
-if ($activity_logs && $activity_logs->num_rows > 0) {
-    while($log = $activity_logs->fetch_assoc()) {
-        $html .= '<tr>
-        <td>'.$log['user_id'].'</td>
-        <td>'.$log['action'].'</td>
-        <td>'.$log['role'].'</td>
-        <td>'.$log['timestamp'].'</td>
-        </tr>';
-    }
-} else {
-    $html .= '<tr><td colspan="4" align="center">No user activity logs found</td></tr>';
+/**
+ * Generate HTML for PDF
+ */
+function generatePDFHTML($headers, $data, $title) {
+    ob_start();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title><?php echo htmlspecialchars($title); ?></title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #78C2AD; padding-bottom: 15px; }
+            .header h1 { color: #2c3e50; margin: 0 0 10px 0; }
+            .meta { color: #6c757d; font-size: 14px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #78C2AD; color: white; padding: 12px; text-align: left; border: 1px solid #5da894; }
+            td { padding: 10px; border: 1px solid #ddd; }
+            tr:nth-child(even) { background-color: #f8fdfb; }
+            .footer { margin-top: 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px; }
+            .no-data { text-align: center; padding: 40px; color: #6c757d; font-style: italic; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1><?php echo htmlspecialchars($title); ?></h1>
+            <div class="meta">
+                Generated on: <?php echo date('Y-m-d H:i:s'); ?><br>
+                Total Records: <?php echo count($data); ?>
+            </div>
+        </div>
+        
+        <?php if (!empty($data)): ?>
+        <table>
+            <thead>
+                <tr>
+                    <?php foreach ($headers as $header): ?>
+                        <th><?php echo htmlspecialchars($header); ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($data as $row): ?>
+                    <tr>
+                        <?php foreach ($row as $cell): ?>
+                            <td><?php echo htmlspecialchars($cell); ?></td>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+            <div class="no-data">No data available for export</div>
+        <?php endif; ?>
+        
+        <div class="footer">
+            Generated by Maktaba Library Management System
+        </div>
+    </body>
+    </html>
+    <?php
+    return ob_get_clean();
 }
-$html .= '</tbody></table>';
-$pdf->writeHTML($html, true, false, true, false, '');
-
-// Audit Trail Table
-$pdf->Ln(5);
-$pdf->SetFont('helvetica', 'B', 12);
-$pdf->Cell(0, 8, 'Audit Trail', 0, 1);
-$pdf->SetFont('helvetica', '', 10);
-
-$html2 = '<table border="1" cellpadding="4">
-<thead>
-<tr>
-<th>ID</th>
-<th>User ID</th>
-<th>Activity</th>
-<th>Role</th>
-<th>Log Time</th>
-</tr>
-</thead>
-<tbody>';
-if ($audit_logs && $audit_logs->num_rows > 0) {
-    while($audit = $audit_logs->fetch_assoc()) {
-        $html2 .= '<tr>
-        <td>'.$audit['id'].'</td>
-        <td>'.$audit['user_id'].'</td>
-        <td>'.$audit['activity'].'</td>
-        <td>'.$audit['role'].'</td>
-        <td>'.$audit['log_time'].'</td>
-        </tr>';
-    }
-} else {
-    $html2 .= '<tr><td colspan="5" align="center">No audit records found</td></tr>';
-}
-$html2 .= '</tbody></table>';
-$pdf->writeHTML($html2, true, false, true, false, '');
-
-// Output PDF to browser
-$pdf_file = 'User_Activity_'.date('Ymd_His').'.pdf';
-$pdf->Output($pdf_file, 'I'); // 'I' = inline view; use 'D' for direct download
->>>>>>> d976d09 (user_activity_report.php + audit integration + usage logs)
+?>

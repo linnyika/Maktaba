@@ -1,70 +1,120 @@
-
 <?php
+require_once("../../database/config.php"); // FIXED PATH
+require_once("../../includes/export_helper.php"); // FIXED PATH
 
-
-require_once '../../includes/config.php';
-require_once '../../includes/excel_generator.php';
-
-session_start();
-if (!isset($_SESSION['admin_id'])) {
-    header('Location: ../../index.php');
-    exit();
-}
-
-$reportType = isset($_GET['type']) ? $_GET['type'] : 'sales';
-$filename   = "maktaba_{$reportType}_report.xlsx";
-
-try {
-    $conn = new mysqli ($host, $user, $pass, $dbname, $port0);
-    if ($conn->connect_error) {
-        throw new Exception("Database connection failed: " . $conn->connect_error);
-    }
-
-       switch ($reportType) {
-        case 'sales':
-            $query = "SELECT transaction_id, customer_name, total_amount, payment_method, created_at 
-                      FROM transactions 
-                      ORDER BY created_at DESC";
-            break;
-
-        case 'books':
-            $query = "SELECT book_id, title, author, category, total_loans, rating 
-                      FROM books 
-                      ORDER BY total_loans DESC";
-            break;
-
-        case 'users':
-            $query = "SELECT user_id, full_name, email, role, created_at 
-                      FROM users 
-                      ORDER BY created_at DESC";
-            break;
-
-        default:
-            throw new Exception("Invalid report type specified.");
-    }
-
-    $result = $conn->query($query);
-
-    $data = [];
-    if ($result && $result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+class ExcelDownloader {
+    
+    public static function download($type, $conn) {
+        try {
+            if (!ExportHelper::isValidType($type)) {
+                throw new Exception("Invalid export type");
+            }
+            
+            $data = self::getData($type, $conn);
+            $headers = ExportHelper::getHeaders($type);
+            $filename = $type . '_report_' . date('Y-m-d') . '.csv';
+            
+            self::sendExcelHeaders($filename);
+            self::generateCSV($headers, $data);
+            
+        } catch (Exception $e) {
+            self::handleError($e->getMessage());
         }
     }
-
-        if (!empty($data)) {
-        generateExcel($data, $filename);
-    } else {
-        echo "<h3 style='color: red; text-align: center;'>No data available for the selected report.</h3>";
+    
+    private static function getData($type, $conn) {
+        $queries = [
+            'reservations' => "
+                SELECT r.reservation_id, u.full_name, b.title, r.pickup_date, 
+                       r.status, r.payment_status, r.reservation_date
+                FROM reservations r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN books b ON r.book_id = b.book_id
+                ORDER BY r.reservation_date DESC
+            ",
+            'audit_trail' => "
+                SELECT log_id, user_id, action, description, ip_address, timestamp
+                FROM audit_trail 
+                ORDER BY timestamp DESC
+            ",
+            'users' => "
+                SELECT user_id, username, full_name, email, role, status, created_at
+                FROM users 
+                ORDER BY created_at DESC
+            ",
+            'books' => "
+                SELECT book_id, title, author, isbn, category, status, created_at
+                FROM books 
+                ORDER BY created_at DESC
+            "
+        ];
+        
+        $result = $conn->query($queries[$type]);
+        if (!$result) {
+            throw new Exception("Database query failed: " . $conn->error);
+        }
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = self::formatRow($type, $row);
+        }
+        
+        return $data;
     }
-
-} catch (Exception $e) {
-    echo "<h3 style='color: red; text-align: center;'>Error: " . htmlspecialchars($e->getMessage()) . "</h3>";
-} finally {
-    if (isset($conn) && $conn instanceof mysqli) {
-        $conn->close();
+    
+    private static function formatRow($type, $row) {
+        // Your formatting logic here
+        switch ($type) {
+            case 'reservations':
+                return [
+                    $row['reservation_id'],
+                    $row['full_name'],
+                    $row['title'],
+                    $row['pickup_date'] ? date('Y-m-d', strtotime($row['pickup_date'])) : 'Not Set',
+                    $row['status'],
+                    $row['payment_status'] ?: 'Pending',
+                    date('Y-m-d H:i:s', strtotime($row['reservation_date']))
+                ];
+            // Add other cases...
+            default:
+                return array_values($row);
+        }
+    }
+    
+    private static function sendExcelHeaders($filename) {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
+    }
+    
+    private static function generateCSV($headers, $data) {
+        $output = fopen('php://output', 'w');
+        fputs($output, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+        fputcsv($output, $headers);
+        foreach ($data as $row) {
+            fputcsv($output, $row);
+        }
+        fclose($output);
+    }
+    
+    private static function handleError($message) {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="export_error.csv"');
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ["Error"]);
+        fputcsv($output, [$message]);
+        fclose($output);
+        exit;
     }
 }
 
-?>
+// Main execution
+$type = $_GET['type'] ?? '';
+if (empty($type)) {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
 
+ExcelDownloader::download($type, $conn);
+?>

@@ -1,143 +1,362 @@
+/* --------------------------------------------------
+   GLOBAL STYLING
+-------------------------------------------------- */
 body {
-  background: linear-gradient(135deg, #b8f3e5 0%, #f3f5f6 60%) !important;
-  min-height: 100vh;
+    background: #f5f7f8;
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* ---------- DASHBOARD LAYOUT ---------- */
-.admin-dashboard {
-  padding: 2rem;
-}
-
+/* Dashboard Header */
 .dashboard-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+    font-weight: 700;
+    font-size: 2.75rem;
+    color: #212529;
 }
 
-.dashboard-widgets {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
+.dashboard-header .lead {
+    font-size: 1.25rem;
 }
 
-/* ---------- WIDGET CARDS ---------- */
-.widget-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-.widget-card:hover {
-  transform: translateY(-3px);
-}
-.widget-card h3 {
-  margin-bottom: 0.3rem;
-}
-.widget-card .stat {
-  font-size: 2rem;
-  color: #007BFF;
-  margin-bottom: 0.5rem;
-}
-.widget-link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #007BFF;
-  font-weight: 500;
+/* --------------------------------------------------
+   DASHBOARD STATS LAYOUT
+-------------------------------------------------- */
+.dashboard-stats {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
-/* ---------- TABLE STYLING ---------- */
-.table-wrapper {
-  overflow-x: auto;
+/* --------------------------------------------------
+   FINAL GREEN BOX STAT STYLE
+   (MATCHES YOUR SCREENSHOT EXACTLY)
+-------------------------------------------------- */
+.stat-box {
+    flex: 1 1 150px;
+    text-align: center;
+    cursor: default;
+    user-select: none;
+    min-width: 120px;
+
+    /* THE GREEN BOX LOOK */
+    background: #e8f5f1 !important;          /* soft mint background */
+    border: 3px solid #78C2AD !important;    /* thick pastel mint border */
+    border-radius: 18px !important;          /* rounded edges */
+    padding: 2rem 1.5rem;
+
+    transition: all 0.3s ease;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-.table th,
-.table td {
-  padding: 0.8rem;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-.table-striped tbody tr:nth-child(even) {
-  background: #f9f9f9;
-}
-.table-hover tbody tr:hover {
-  background: #f1f1f1;
-}
-
-/* ---------- BASIC TABLE RESET ---------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
-}
-th {
-  background: #333;
-  color: #fff;
-}
-
-/* ---------- BUTTONS ---------- */
-.btn {
-  padding: 5px 10px;
-  border-radius: 4px;
-  text-decoration: none;
-  color: white;
-}
-.btn-confirm {
-  background: #28a745;
-}
-.btn-cancel {
-  background: #78C2AD;
-}
-.btn-delete {
-  background: #6c757d;
-}
-.message {
-  margin: 15px 0;
-  color: green;
-}
-
-.card {
-    border-radius: 0.75rem;
-    border: none;
-}
-
-.report-card {
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.report-card:hover {
+/* Hover effect */
+.stat-box:hover {
+    border-color: #5da894 !important;
+    background: #dff0ea !important;
     transform: translateY(-3px);
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(120, 194, 173, 0.25);
 }
 
-.table-wrapper {
-    background: #fff;
-    border-radius: 0.75rem;
-    padding: 1rem;
+/* Icon styling (green) */
+.icon-container i {
+    font-size: 3rem !important;
+    color: #78C2AD !important;
+    margin-bottom: 1rem;
 }
 
-.table thead th {
+/* Stat Number */
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3d6f63 !important;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+/* Stat Label */
+.stat-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a7e73 !important;
+    margin: 0;
+}
+
+/* Pending subtext */
+.stat-subtext {
+    font-size: 0.80rem;
+    color: #5b9486 !important;
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+/* --------------------------------------------------
+   RECENT ORDERS TABLE
+-------------------------------------------------- */
+.table-primary {
     background-color: #78C2AD !important;
     color: white;
 }
 
-.badge.low-stock {
-    background-color: #dc3545;
+.table {
+    font-size: 0.95rem;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.chart-card {
-    min-height: 300px;
+.table th, .table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eaeaea;
 }
 
+.table-hover tbody tr:hover {
+    background-color: #e8f0f0;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #78C2AD;
+    border-color: #78C2AD;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #65a698;
+    border-color: #65a698;
+}
+
+/* Footer */
+footer {
+    font-size: 0.875rem;
+    letter-spacing: 0.03em;
+    text-align: center;
+    margin-top: 3rem;
+    color: #6c757d;
+}
+
+/* --------------------------------------------------
+   RESPONSIVE ADJUSTMENTS
+-------------------------------------------------- */
+@media (max-width: 575.98px) {
+    .dashboard-stats {
+        gap: 1rem;
+    }
+
+    .stat-box {
+        flex: 1 1 45%;
+        min-width: auto;
+        padding: 1.5rem 1rem;
+    }
+
+    .icon-container i {
+        font-size: 2.5rem;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+    }
+}
+
+/* Additional styling for the table section */
+.table-section {
+    margin-top: 3rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 1.5rem;
+}
+
+/* Custom badge styling */
+.badge {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Table responsive container */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Custom navbar styling for admin */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Custom card styling */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Custom form controls */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #78C2AD;
+    box-shadow: 0 0 0 0.2rem rgba(120, 194, 173, 0.25);
+}
+
+/* Custom alert styling */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Custom pagination */
+.pagination .page-link {
+    color: #78C2AD;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #78C2AD;
+    border-color: #78C2AD;
+}
+
+/* Custom modal styling */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Custom button variants */
+.btn-outline-primary {
+    color: #78C2AD;
+    border-color: #78C2AD;
+}
+
+.btn-outline-primary:hover {
+    background-color: #78C2AD;
+    border-color: #78C2AD;
+    color: white;
+}
+
+/* Custom text colors */
+.text-primary {
+    color: #78C2AD !important;
+}
+
+/* Custom background colors */
+.bg-primary {
+    background-color: #78C2AD !important;
+}
+
+/* Status badges specific styling */
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Empty state styling */
+.text-center.py-5 .display-1 {
+    font-size: 4rem;
+}
+
+/* Rounded elements */
+.rounded-3 {
+    border-radius: 12px !important;
+}
+
+.rounded-4 {
+    border-radius: 16px !important;
+}
+
+/* Custom shadow */
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Custom spacing for dashboard */
+.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+/* Responsive table text */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.85rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+    }
+}
+
+/* Animation for page load */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Focus states for accessibility */
+.btn:focus, .form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(120, 194, 173, 0.25);
+}
+
+/* Print styles */
+@media print {
+    .navbar, footer, .btn {
+        display: none !important;
+    }
+    
+    .stat-box {
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+    }
+    
+    .table {
+        box-shadow: none !important;
+    }
+}

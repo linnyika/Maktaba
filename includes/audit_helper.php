@@ -13,15 +13,15 @@ if (session_status() === PHP_SESSION_NONE) {
  *
  * @param mysqli $conn The MySQLi connection object
  * @param int $user_id ID of the user performing the activity
- * @param string $activity Description of the activity
+ * @param string $action Description of the activity
  * @return bool True on success, false on failure
  */
-function logActivity($conn, $user_id, $activity) {
-    if (!$conn || !$user_id || !$activity) {
+function logActivity(mysqli $conn, int $user_id, string $action): bool {
+    if (!$conn || $user_id <= 0 || empty($action)) {
         return false; // invalid input
     }
 
-    // Ensure activity_logs table exists
+    // Ensure the activity_logs table exists
     $createTableSQL = "
         CREATE TABLE IF NOT EXISTS activity_logs (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,42 +29,63 @@ function logActivity($conn, $user_id, $activity) {
             action VARCHAR(255) NOT NULL,
             timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             INDEX(user_id),
-            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+            CONSTRAINT fk_user_activity FOREIGN KEY (user_id)
+                REFERENCES users(user_id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     ";
     $conn->query($createTableSQL);
 
-    // Insert activity log
+    // Insert the activity log safely
     $stmt = $conn->prepare("INSERT INTO activity_logs (user_id, action, timestamp) VALUES (?, ?, NOW())");
     if (!$stmt) {
+        error_log("Failed to prepare activity log statement: " . $conn->error);
         return false;
     }
-    $stmt->bind_param("is", $user_id, $activity);
+
+    $stmt->bind_param("is", $user_id, $action);
     $success = $stmt->execute();
+
+    if (!$success) {
+        error_log("Failed to execute activity log statement: " . $stmt->error);
+    }
+
     $stmt->close();
     return $success;
 }
 
 /**
- * Optional: fetch recent activity logs
+ * Fetch recent activity logs
  *
  * @param mysqli $conn
- * @param int $limit
+ * @param int $limit Number of logs to fetch
  * @return array
  */
-function getActivityLogs($conn, $limit = 50) {
+function getActivityLogs(mysqli $conn, int $limit = 50): array {
     $logs = [];
-    $result = $conn->query("
-        SELECT a.user_id, a.action, u.role, a.timestamp
+    $limit = max(1, $limit); // ensure positive integer
+
+    $sql = "
+        SELECT a.id, a.user_id, a.action, a.timestamp, u.full_name, u.user_role
         FROM activity_logs a
         LEFT JOIN users u ON a.user_id = u.user_id
         ORDER BY a.timestamp DESC
-        LIMIT $limit
-    ");
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $logs[] = $row;
-        }
+        LIMIT ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        error_log("Failed to prepare fetch logs statement: " . $conn->error);
+        return $logs;
     }
+
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $logs[] = $row;
+    }
+
+    $stmt->close();
     return $logs;
 }

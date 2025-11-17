@@ -3,6 +3,7 @@ require_once("../../database/config.php");
 require_once("../../includes/admin_check.php");
 require_once("../../includes/notification_helper.php"); // for logActivity()
 
+
 $message = "";
 
 // Delete user
@@ -59,6 +60,7 @@ $users = $stmt->get_result();
   <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/admin.css">
+
 </head>
 <body class="d-flex flex-column min-vh-100">
   <?php include("../../includes/admin_nav.php"); ?>

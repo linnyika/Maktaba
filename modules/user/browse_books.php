@@ -133,7 +133,7 @@ if (isset($_GET['ajax'])) {
 
 <script src="../../assets/js/data_filter.js"></script>
 <script>
-    // Optional: instant form auto-submit for live filtering
+    // Auto-submit for instant filtering
     const form = document.getElementById('filterForm');
     form.addEventListener('change', () => form.dispatchEvent(new Event('submit')));
 </script>

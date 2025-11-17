@@ -85,12 +85,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <label class="form-label">Password</label>
           <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
         </div>
-        <button type="submit" class="btn btn-success btn-lg w-100 mb-3">Login</button>
+        <button type="submit" class="btn btn-success btn-lg w-100 mb-2">Login</button>
       </form>
 
-      <p class="mb-0">Don’t have an account? 
-        <a href="signup.php" class="text-primary text-decoration-none fw-semibold">Sign up here</a>
-      </p>
+      <div class="d-flex justify-content-between mt-2">
+        <a href="forgot_password.php" class="text-primary fw-semibold">Forgot Password?</a>
+        <a href="signup.php" class="text-primary fw-semibold">Sign up</a>
+      </div>
+
     </div>
   </div>
 

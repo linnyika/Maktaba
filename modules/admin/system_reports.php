@@ -11,13 +11,13 @@ function runCountQuery($conn, $query) {
     return (int)($row[0] ?? 0);
 }
 
-// Summary counts (safe — returns 0 if table missing)
+// Summary counts
 $totalUsers  = runCountQuery($conn, "SELECT COUNT(*) FROM users");
 $totalBooks  = runCountQuery($conn, "SELECT COUNT(*) FROM books");
-$totalLogs   = runCountQuery($conn, "SELECT COUNT(*) FROM logs");
+$totalLogs   = runCountQuery($conn, "SELECT COUNT(*) FROM activity_logs");
 $totalAudits = runCountQuery($conn, "SELECT COUNT(*) FROM audit_trail");
 
-// Discover audit_trail columns so we can adapt to your schema
+// Discover audit_trail columns to adapt dynamically
 $columns = [];
 $colQ = $conn->query("
     SELECT COLUMN_NAME
@@ -31,7 +31,7 @@ if ($colQ) {
     }
 }
 
-// Determine which columns to select (fallbacks)
+// Determine which columns exist
 $col_id = in_array('id', $columns) ? 'id' : (in_array('audit_id', $columns) ? 'audit_id' : null);
 $col_user = in_array('user_id', $columns) ? 'user_id' : (in_array('admin_id', $columns) ? 'admin_id' : null);
 $col_action = in_array('action', $columns) ? 'action' : (in_array('activity', $columns) ? 'activity' : null);
@@ -39,7 +39,7 @@ $col_description = in_array('description', $columns) ? 'description' : (in_array
 $col_ip = in_array('ip_address', $columns) ? 'ip_address' : (in_array('ip', $columns) ? 'ip' : null);
 $col_timestamp = in_array('timestamp', $columns) ? 'timestamp' : (in_array('created_at', $columns) ? 'created_at' : (in_array('date', $columns) ? 'date' : null));
 
-// Build select list dynamically (only existing columns)
+// Build select list dynamically
 $selectCols = [];
 if ($col_id) $selectCols[] = $col_id . " AS id";
 if ($col_user) $selectCols[] = $col_user . " AS user_id";
@@ -48,14 +48,12 @@ if ($col_description) $selectCols[] = $col_description . " AS description";
 if ($col_ip) $selectCols[] = $col_ip . " AS ip_address";
 if ($col_timestamp) $selectCols[] = $col_timestamp . " AS timestamp";
 
+// Fetch audit logs if possible
 $audits = false;
 if (!empty($selectCols)) {
     $selectSql = implode(", ", $selectCols);
     $sql = "SELECT $selectSql FROM audit_trail ORDER BY " . ($col_timestamp ?? ($col_id ?? '1')) . " DESC LIMIT 100";
     $audits = $conn->query($sql);
-} else {
-    // audit_trail table missing or has unexpected schema
-    $audits = false;
 }
 ?>
 <!DOCTYPE html>
@@ -79,23 +77,6 @@ if (!empty($selectCols)) {
 
   <main class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-<<<<<<< HEAD
-        <h3 class="fw-bold text-primary">System Reports Overview</h3>
-    </div>
-
-    <!-- ✅ Export Controls Section -->
-    <div class="mb-5">
-        <?php include __DIR__ . '/export_ui.php'; ?>
-    </div>
-
-    <!-- Charts -->
-    <section class="row g-3 mb-5">
-        <div class="col-md-6">
-            <div class="card chart-card shadow-sm">
-                <div class="card-header fw-semibold bg-primary text-white">Order Status Breakdown</div>
-                <div class="card-body"><canvas id="ordersStatusChart" height="180"></canvas></div>
-            </div>
-=======
       <div>
         <h2 class="fw-bold text-primary"><i class="bi bi-bar-chart-line me-2"></i>System Reports</h2>
         <p class="text-muted mb-0">Overview of system usage and recent audit entries.</p>
@@ -108,7 +89,6 @@ if (!empty($selectCols)) {
         <div class="card stat-card">
           <div class="text-muted">Registered Users</div>
           <div class="num text-primary"><?= htmlspecialchars($totalUsers) ?></div>
->>>>>>> d976d09 (user_activity_report.php + audit integration + usage logs)
         </div>
       </div>
       <div class="col-md-3">
@@ -131,6 +111,22 @@ if (!empty($selectCols)) {
       </div>
     </div>
 
+    <!-- Export UI (buttons) -->
+    <div class="mb-4">
+      <div class="d-flex gap-2">
+        <form method="post" action="download_excel.php">
+          <button type="submit" class="btn btn-success btn-sm">
+            <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+          </button>
+        </form>
+        <form method="post" action="download_pdf.php">
+          <button type="submit" class="btn btn-danger btn-sm">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!-- Audit trail table -->
     <div class="card mb-4">
       <div class="card-header bg-danger text-white">
@@ -138,7 +134,7 @@ if (!empty($selectCols)) {
       </div>
       <div class="card-body">
         <?php if ($audits === false): ?>
-          <div class="alert alert-warning">Audit trail table missing or has an unexpected schema. Please check your <code>audit_trail</code> table columns.</div>
+          <div class="alert alert-warning">Audit trail table missing or has an unexpected schema.</div>
         <?php else: ?>
           <div class="table-responsive">
             <table id="auditTable" class="table table-striped table-hover">
@@ -173,31 +169,22 @@ if (!empty($selectCols)) {
         <?php endif; ?>
       </div>
     </div>
-
   </main>
 
   <footer class="bg-primary text-white text-center py-3 mt-auto">
     <small>&copy; <?= date('Y') ?> Maktaba Bookstore | System Reports</small>
   </footer>
 
-<<<<<<< HEAD
-<script>
-window.reportData = <?= json_encode($reportData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
-</script>
-<script src="/assets/js/admin_charts.js"></script>
-<script src="/assets/js/export.js"></script>
-=======
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
   <script>
     $(document).ready(function() {
       $('#auditTable').DataTable({
-        "order": [], // keep DB order by default
+        "order": [],
         "pageLength": 25
       });
     });
   </script>
->>>>>>> d976d09 (user_activity_report.php + audit integration + usage logs)
 </body>
 </html>

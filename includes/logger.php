@@ -9,7 +9,7 @@ function logActivity($user_id, $action, $module, $description) {
         return;
     }
 
-    // ✅ If the user_id is 0 or invalid, set it to NULL to avoid FK constraint errors
+    // If the user_id is 0 or invalid, set it to NULL to avoid FK constraint errors
     if (empty($user_id) || $user_id == 0) {
         $user_id = null;
     }
@@ -21,7 +21,7 @@ function logActivity($user_id, $action, $module, $description) {
     ");
 
     if ($stmt) {
-        // ✅ Use 'i' if integer, but NULL must be bound using mysqli_stmt::bind_param carefully
+        //  Use 'i' if integer, but NULL must be bound using mysqli_stmt::bind_param carefully
         // To safely handle NULL, we must pass the variable by reference and specify the type
         $stmt->bind_param("isss", $user_id, $action, $module, $description);
         

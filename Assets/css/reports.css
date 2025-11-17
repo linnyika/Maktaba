@@ -1,0 +1,315 @@
+/* Reports and Export Styles */
+.export-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e8f5f1;
+}
+
+.page-header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 2.25rem;
+}
+
+.page-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Date Filter Styles */
+.date-filter-container {
+    background: #f8fdfb;
+    border: 2px solid #e8f5f1;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+}
+
+.date-filter-container h5 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.date-filter-form .form-label {
+    font-weight: 600;
+    color: #4a7e73;
+    margin-bottom: 8px;
+}
+
+.filter-status {
+    margin-top: 15px;
+    min-height: 30px;
+}
+
+/* Export Options Grid */
+.export-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.export-box {
+    border: 2px solid #e8f5f1;
+    border-radius: 15px;
+    padding: 25px;
+    background: #f8fdfb;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.export-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #78C2AD, #5da894);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.export-box:hover {
+    box-shadow: 0 8px 25px rgba(120, 194, 173, 0.2);
+    transform: translateY(-5px);
+    border-color: #78C2AD;
+}
+
+.export-box:hover::before {
+    opacity: 1;
+}
+
+.export-icon {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.export-icon i {
+    font-size: 2.5rem;
+    color: #78C2AD;
+    background: #e8f5f1;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.export-content {
+    flex-grow: 1;
+    margin-bottom: 25px;
+}
+
+.export-content h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.export-content p {
+    color: #5a6c7d;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.export-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* Button Styles */
+.btn-export, .btn-preview {
+    border: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-export.excel {
+    background: #217346;
+    color: white;
+}
+
+.btn-export.excel:hover {
+    background: #1a5c38;
+    transform: translateY(-2px);
+}
+
+.btn-export.pdf {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-export.pdf:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.btn-preview {
+    background: #6c757d;
+    color: white;
+    grid-column: 1 / -1;
+}
+
+.btn-preview:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-export:disabled, .btn-preview:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Loading States */
+.export-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.export-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Modal Customization */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .export-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    
+    .export-options {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .export-box {
+        padding: 20px;
+    }
+    
+    .page-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .date-filter-form .row {
+        flex-direction: column;
+    }
+    
+    .date-filter-form .col-md-4 {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .export-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .export-content h3 {
+        font-size: 1.2rem;
+    }
+    
+    .export-icon i {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .export-actions, .date-filter-container {
+        display: none !important;
+    }
+    
+    .export-box {
+        break-inside: avoid;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Success/Error States */
+.export-success {
+    border-color: #28a745 !important;
+}
+
+.export-error {
+    border-color: #dc3545 !important;
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057) !important;
+}
